@@ -1,0 +1,12 @@
+name: 'Godot Action'
+description: 'Build godot project'
+inputs:
+  previous-tag:
+    description: 'Previous tag'
+    default: ''
+  latest-tag:
+    description: 'Latest tag'
+    default: ''
+runs:
+  using: 'node20'
+  main: 'index.js'

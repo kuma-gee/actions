@@ -1,0 +1,56 @@
+name: 'Godot Env'
+description: 'Setup godot environment variables'
+inputs:
+  output:
+    description: 'Output file'
+    required: true
+    default: 'build.gd'
+  code:
+    description: 'Game Code'
+    default: ''
+  version:
+    description: 'Game Version'
+    default: ''
+  steam-app:
+    description: 'Steam App ID'
+    default: '430'
+runs:
+  using: "composite"
+  steps:
+    - name: Get Game Version
+      id: game-version
+      run: |
+        CLIENT_VERSION="$VERSION"
+        if [ -z "$CLIENT_VERSION" ]; then
+          if [ -n "$GITHUB_SHA" ]; then
+            CLIENT_VERSION="$GITHUB_SHA"
+          fi
+        fi
+      
+        echo "value=$CLIENT_VERSION" >> "$GITHUB_OUTPUT"`
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+    
+    - name: Generate Game Hash
+      id: game-hash
+      run: echo "value=$(echo -n $CODE | sha256sum)" >> "$GITHUB_OUTPUT"
+      shell: bash
+      env:
+        CODE: ${{ inputs.code }}
+
+    - name: Generate Build File
+      run: |
+        cat << EOF > $OUTPUT
+        class_name Build
+
+        const VERSION = '$VERSION'
+        const GAME_HASH = '$HASH'
+        const STEAM_APP = $STEAM_APP
+        EOF
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.output }}
+        VERSION: ${{ steps.game-version.outputs.value }}
+        HASH: ${{ steps.game-hash.outputs.value }}
+        STEAM_APP: ${{ inputs.steam-app }}

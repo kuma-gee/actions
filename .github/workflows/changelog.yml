@@ -1,0 +1,16 @@
+name: "Changelog"
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Hello world action step
+        uses: ./.github/actions/changelog
