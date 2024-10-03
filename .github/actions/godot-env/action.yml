@@ -27,7 +27,7 @@ runs:
           fi
         fi
       
-        echo "value=$CLIENT_VERSION" >> "$GITHUB_OUTPUT"`
+        echo "value=$CLIENT_VERSION" >> "$GITHUB_OUTPUT"
       shell: bash
       env:
         VERSION: ${{ inputs.version }}

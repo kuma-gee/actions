@@ -20,6 +20,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: kuma-gee/action-protect-assets@v1
+        if: env.PW
+        with:
+          path: assets
+          password: ${{ env.PW }}
+        env:
+          PW: ${{ secrets.GODOT_ASSETS_PASSWORD }}
+
+      - uses: ./.github/actions/godot-env
+        with:
+          output: src/build.gd
+          code: ${{ secrets.GAME_CODE }}
+          version: ${{ github.ref }}
+          steam-app: 430
+
+      - uses: ./.github/actions/godot-build
+        with:
+          output: src/build.gd
+          code: ${{ secrets.GAME_CODE }}
+          version: ${{ github.ref }}
+          steam-app: 430
+
       # TODO: composite action for build
 
       - name: Publish Itch
