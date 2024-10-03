@@ -7,6 +7,9 @@ inputs:
   latest-tag:
     description: 'Latest tag'
     default: ''
+outputs:
+  changelog:
+    description: 'Changelog Content'
 runs:
   using: 'node20'
   main: 'index.js'
