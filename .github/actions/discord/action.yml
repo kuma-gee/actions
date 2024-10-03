@@ -1,0 +1,16 @@
+name: 'Godot Action'
+description: 'Build godot project'
+inputs:
+  discord-webhook:
+    description: 'Discord webhook'
+    required: true
+    default: ''
+  title:
+    description: 'Title'
+    default: ''
+  message:
+    description: 'Message'
+    default: ''
+runs:
+  using: 'node20'
+  main: 'index.js'

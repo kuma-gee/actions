@@ -1,0 +1,21 @@
+name: 'Random Password'
+description: 'Generate a random password'
+inputs:
+  length:
+    description: 'Password length'
+    required: true
+    default: '16'
+outputs:
+  password:
+    description: 'Random password'
+    value: ${{ steps.random-password.outputs.password }}
+runs:
+  using: "composite"
+  steps:
+    - name: Generate random password
+      id: random-password
+      run: echo "password=$(tr -dc A-Za-z0-9 </dev/urandom | head -c $LENGTH; echo)" >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        LENGTH: ${{ inputs.length }}
+    
