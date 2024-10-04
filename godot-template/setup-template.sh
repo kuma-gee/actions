@@ -1,17 +1,34 @@
 #!/bin/sh
 
 GODOT_VERSION="$1"
-TOKEN="$2"
+PLATFORM="$2"
 ENCRYPTION_KEY="$3"
 
-git clone -b "$GODOT_VERSION-stable" --single-branch https://github.com/godotengine/godot.git
+TARGET="template_release"
+ARCH="x86_64"
 
-if [ -z "$ENCRYPTION_KEY" ]; then
-    # assuming the default templates are installed
-    # mkdir -v -p ~/.local/share/godot/export_templates
-    # mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-else
-    export SCRIPT_AES256_ENCRYPTION_KEY="$ENCRYPTION_KEY"
-    scons platform=linuxbsd target=template_release arch=x86_64
-    scons platform=linuxbsd target=template_debug arch=x86_64
+if [ ${#ENCRYPTION_KEY} -ne 64 ]; then
+    echo "Invalid encryption key"
+    exit 1
 fi
+
+if [ ! -d godot ]; then
+    git clone -b "$GODOT_VERSION-stable" --single-branch https://github.com/godotengine/godot.git
+fi
+
+cd godot
+
+# Ensure we don't include editor code in export template builds.
+rm -rf editor
+
+export SCRIPT_AES256_ENCRYPTION_KEY="$ENCRYPTION_KEY"
+scons platform=$PLATFORM target=$TARGET arch=$ARCH tools=no debug_symbols=no \
+    lto=full optimize=size \
+    module_text_server_adv_enabled=no module_text_server_fb_enabled=yes # Use fallback text server
+
+cd -
+
+FILE=godot/bin/godot.$PLATFORM.$TARGET.$ARCH
+strip $FILE
+
+echo "file=$FILE" >> $GITHUB_OUTPUT

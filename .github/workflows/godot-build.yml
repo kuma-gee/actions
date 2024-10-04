@@ -1,0 +1,65 @@
+name: Build Godot Project
+
+on:
+  workflow_call:
+    inputs:
+      channel:
+        description: 'Channel to build'
+        required: true
+        type: string
+        default: 'win'
+      output:
+        description: 'Output directory'
+        required: true
+        type: string
+      steam-app:
+        description: 'Steam App ID'
+        required: false
+        type: number
+    secrets:
+      game-code:
+        description: 'Game code'
+        required: false
+      assets-password:
+        description: 'Password for the protected assets'
+        required: false
+      zip-password:
+        description: 'Password for the zip files'
+        required: false
+
+jobs:
+  build-godot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unpack protected assets
+        uses: kuma-gee/action-protect-assets@v1
+        with:
+          path: assets
+          password: ${{ secrets.assets-password }}
+
+      - name: Create Godot Environment File
+        uses: ./.github/actions/godot-env
+        with:
+          output: src/build.gd
+          code: ${{ secrets.game-code }}
+          version: ${{ github.ref }}
+          steam-app: ${{ inputs.steam-app }}
+
+      - name: Build
+        run: |
+          mkdir -v -p $OUTPUT/$CHANNEL
+          godot --export-release --headless $CHANNEL
+        shell: bash
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          OUTPUT: ${{ inputs.output }}
+
+      - name: Zip builds
+        run: |
+          cd $OUTPUT
+          mv $CHANNEL $GAME
+          zip -e -r $GAME-$CHANNEL.zip $GAME -P $PASSWORD
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          OUTPUT: ${{ inputs.output }}
+          PASSWORD: ${{ inputs.zip-password }}

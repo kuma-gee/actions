@@ -3,6 +3,11 @@
 username=$1
 org=$2
 
+ARGS=""
+if [ ! -z $org ]; then
+    ARGS="--org $org -v all"
+fi
+
 read -s -p "Password: " password
 steamcmd +login $username $password +quit
 
@@ -13,9 +18,6 @@ if [ ! -f $STEAM_CONFIG ]; then
 fi
 
 ENCODED="$(base64 $STEAM_CONFIG -w 0)"
-if [ -z $org ]; then
-    gh secret set STEAM_CONFIG_VDF -b $ENCODED
-else
-    gh secret set STEAM_CONFIG_VDF --org $org -v all -b $ENCODED
-fi
+gh secret set STEAM_USERNAME $ARGS -b $username
+gh secret set STEAM_CONFIG_VDF $ARGS -b $ENCODED
 echo "Set Steam config VDF as secret"

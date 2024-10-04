@@ -7,12 +7,13 @@ on:
         description: 'Artifact patterns to download'
         required: true
         type: string
-      password:
-        description: 'Optional password for the files'
+      name:
+        description: 'Name of the release'
         type: string
+        default: ''
     secrets:
       discord-webhook:
-        required: true
+        required: false
 
 
 jobs:
@@ -24,6 +25,9 @@ jobs:
           fetch-depth: 0
 
       - uses: ./changelog
+      - run: echo $CHANGELOG > CHANGELOG.md
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
 
       - uses: actions/download-artifact@v4
         with:
@@ -40,17 +44,17 @@ jobs:
             **/*.aab
 
       - name: Successful release!
-        if: success()
+        if: success() && secrets.discord-webhook
         uses: ./discord
         with:
-          discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
-          title: "${{env.GAME}} - New Release ${{ github.ref }}"
+          discord-webhook: ${{ secrets.discord-webhook }}
+          title: "${{ inputs.name }} - New Release ${{ github.ref }}"
           message: "${{ steps.changelog.outputs.changelog }}"
 
       - name: Failed release!
-        if: failure()
+        if: failure() && secrets.discord-webhook
         uses: ./discord
         with:
-          discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
-          title: "${{env.GAME}} - Failed Release ${{ github.ref }}"
+          discord-webhook: ${{ secrets.discord-webhook }}
+          title: "${{ inputs.name }} - Failed Release ${{ github.ref }}"
           message: "See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -1,6 +1,7 @@
 FROM alpine:3.20.3
 
 RUN apk add --no-cache \
+  git \
   scons \
   pkgconf \
   gcc \
@@ -13,7 +14,8 @@ RUN apk add --no-cache \
   mesa-dev \
   eudev-dev \
   alsa-lib-dev \
-  pulseaudio-dev
+  pulseaudio-dev \
+  mingw-w64-gcc
 
 COPY setup-template.sh /setup-template.sh
 
