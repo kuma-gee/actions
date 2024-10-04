@@ -5,47 +5,66 @@ on:
     tags:
       - "v*.*.*"
 
+env:
+  GAME: godot-template
+  GODOT_VERSION: 4.3
+  STEAM_APP: 430
+
 jobs:
+  generate-password:
+    runs-on: ubuntu-latest
+    outputs:
+      password: ${{ steps.random-password.outputs.password }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/password
+        id: random-password
+        with:
+          length: 8
+
   release:
     runs-on: ubuntu-latest
+    needs: generate-password
     container:
       image: barichello/godot-ci:4.3
     strategy:
       matrix:
         channel: [web, win, linux]
     env:
-      GAME: godot-template
       CHANNEL: ${{matrix.channel}}
-      GODOT_VERSION: 4.3
     steps:
       - uses: actions/checkout@v4
 
       - uses: kuma-gee/action-protect-assets@v1
-        if: env.PW
         with:
           path: assets
-          password: ${{ env.PW }}
-        env:
-          PW: ${{ secrets.GODOT_ASSETS_PASSWORD }}
+          password: ${{ secrets.GODOT_ASSETS_PASSWORD }}
 
       - uses: ./.github/actions/godot-env
         with:
           output: src/build.gd
           code: ${{ secrets.GAME_CODE }}
           version: ${{ github.ref }}
-          steam-app: 430
+          steam-app: ${{ env.STEAM_APP }}
 
       - uses: ./.github/actions/godot-build
         with:
           output: src/build.gd
-          code: ${{ secrets.GAME_CODE }}
-          version: ${{ github.ref }}
-          steam-app: 430
 
-      # TODO: composite action for build
+      - uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}          
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
+          appId: 1234560
+          buildDescription: $GITHUB_REF_NAME
+          rootPath: build
+          depot1Path: StandaloneWindows64
+          depot1InstallScriptPath: StandaloneWindows64/install_script.vdf
+          depot2Path: StandaloneLinux64
+          releaseBranch: prerelease
 
       - name: Publish Itch
-        if: env.BUTLER_API_KEY && env.USER && env.GAME && !contains(github.ref, '-rc') && env.CHANNEL == 'web'
+        if: env.BUTLER_API_KEY && env.USER && env.GAME && !contains(github.ref, '-rc')
         shell: bash
         env:
           BUTLER_API_KEY: ${{secrets.BUTLER_API_KEY}}
@@ -56,7 +75,10 @@ jobs:
         if: env.CHANNEL != 'mac'
         run: |
           cd build
-          mv $CHANNEL $GAME && zip -r $GAME-$CHANNEL.zip $GAME
+          mv $CHANNEL $GAME
+          echo "$"zip -e -r $GAME-$CHANNEL.zip $GAME
+        env:
+          PASSWORD: ${{ needs.generate-password.outputs.password }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -68,24 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: release
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/github-release.yml
         with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: echo "latest_tag=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-      - run: echo "prev_tag=$(git tag | sort --version-sort | tail -n2 | head -1)" >> $GITHUB_ENV
-      - run: npm ci && npm run changelog -- -t ${{env.prev_tag}}..${{env.latest_tag}}
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: release-*
-          merge-multiple: true
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: CHANGELOG.md
-          prerelease: false
-          files: |
-            **/*.zip
-            **/*.aab
+          artifact: release-*
+          password: ${{ secrets.GODOT_ASSETS_PASSWORD }}

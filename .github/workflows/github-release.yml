@@ -1,0 +1,56 @@
+name: Github release with changelog and discord notification
+
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        description: 'Artifact patterns to download'
+        required: true
+        type: string
+      password:
+        description: 'Optional password for the files'
+        type: string
+    secrets:
+      discord-webhook:
+        required: true
+
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./changelog
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          merge-multiple: true
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: CHANGELOG.md
+          prerelease: false
+          files: |
+            **/*.zip
+            **/*.aab
+
+      - name: Successful release!
+        if: success()
+        uses: ./discord
+        with:
+          discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
+          title: "${{env.GAME}} - New Release ${{ github.ref }}"
+          message: "${{ steps.changelog.outputs.changelog }}"
+
+      - name: Failed release!
+        if: failure()
+        uses: ./discord
+        with:
+          discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
+          title: "${{env.GAME}} - Failed Release ${{ github.ref }}"
+          message: "See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

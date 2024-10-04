@@ -6,11 +6,54 @@ on:
       - main
   
 jobs:
+  test-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./changelog
+        id: changelog
+        with:
+          previous-tag: v0.1
+          latest-tag: v0.2
+      - run: |
+          echo "::debug::Generated changelog $changelog"
+
+          if ! echo "$changelog" | grep -q "v0.2"; then
+            echo "::error::Changelog missing v0.2"
+            exit 1
+          fi
+          if ! echo "$changelog" | grep -q "### Bug Fixes"; then
+            echo "::error::Changelog Bug Fixes"
+            exit 1
+          fi
+          if ! echo "$changelog" | grep -q "### Features"; then
+            echo "::error::Changelog Features"
+            exit 1
+          fi
+
+          commits=$(git log v0.1..v0.2 --oneline | cut -d' ' -f1)
+          for commit in $commits; do
+            if ! echo "$changelog" | grep -q "$commit"; then
+              echo "::error::Commit $commit missing in changelog"
+              exit 1
+            fi
+          done
+
+          commitCount=$(echo "$commits" | wc -l)
+          actualCount=$(echo "$changelog" | grep -o "* " | wc -l)
+          if [ $actualCount -ne $commitCount ]; then
+            echo "::error::There are $actualCount commits in changelog, but $commitCount expected"
+            exit 1
+          fi
+        shell: bash
+        env:
+          changelog: ${{ steps.changelog.outputs.changelog }}
+
   test-godot-env:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/godot-env
+      - uses: ./godot-env
         with:
           output: build.gd
           code: secret-game-code
@@ -36,15 +79,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/password
+      - uses: ./password
         id: random-password-1
         with:
           length: 5
-      - uses: ./.github/actions/password
+      - uses: ./password
         id: random-password-2
         with:
           length: 10
-      - uses: ./.github/actions/password
+      - uses: ./password
         id: random-password-3
         with:
           length: 100
