@@ -38,7 +38,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: template-${{ matrix.platform }}
-          path: godot/bin/*
+          path: godot/bin/**
 
   release-godot-template:
     runs-on: ubuntu-latest
@@ -56,6 +56,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: false
-          files: bin/*
+          files: bin/**
           name: Godot ${{ vars.GODOT_VERSION }} Templates
           tag_name: template-${{ vars.GODOT_VERSION }}
