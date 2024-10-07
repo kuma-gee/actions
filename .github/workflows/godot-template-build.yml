@@ -33,7 +33,7 @@ jobs:
         with:
           version: ${{ inputs.version }}
           platform: ${{ inputs.platform }}
-          encryption-key: ${{ jobs.generate-encryption.outputs.key }}
+          encryption-key: ${{ needs.generate-encryption.outputs.key }}
 
       - uses: actions/upload-artifact@v4
         with:
