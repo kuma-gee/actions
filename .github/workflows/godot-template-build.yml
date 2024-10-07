@@ -15,7 +15,7 @@ env:
 jobs:
   template-build:
     runs-on: ubuntu-latest
-    if: ${{ env.KEY != '' }}
+    if: env.KEY != ''
     strategy:
       matrix:
         platform: [linuxbsd, windows, web]
