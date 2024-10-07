@@ -28,7 +28,9 @@ jobs:
           platform: ${{ matrix.platform }}
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
-      - run: touch godot/bin/$PLATFORM_release
+      - run: |
+          mkdir -p godot/bin
+          touch godot/bin/$PLATFORM_release
         if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
