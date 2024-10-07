@@ -12,10 +12,6 @@ on:
         description: 'Output directory'
         required: true
         type: string
-      steam-app:
-        description: 'Steam App ID'
-        required: false
-        type: number
     secrets:
       game-code:
         description: 'Game code'
@@ -38,12 +34,17 @@ jobs:
           password: ${{ secrets.assets-password }}
 
       - name: Create Godot Environment File
-        uses: ./.github/actions/godot-env
+        uses: kuma-gee/action-godot/godot-env@main
         with:
           output: src/build.gd
           code: ${{ secrets.game-code }}
           version: ${{ github.ref }}
-          steam-app: ${{ inputs.steam-app }}
+          steam-app: ${{ vars.STEAM_APP }}
+
+      - name: Unpack protected assets
+        uses: kuma-gee/action-godot/setup-template@main
+        with:
+          version: ${{ vars.GODOT_VERSION }}
 
       - name: Build
         run: |

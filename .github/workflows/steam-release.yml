@@ -5,10 +5,6 @@ on:
     tags:
       - "v*.*.*"
 
-env:
-  GODOT_VERSION: 4.3
-  STEAM_APP: 430
-
 jobs:
   generate-password:
     runs-on: ubuntu-latest
@@ -25,21 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: generate-password
     container:
-      image: barichello/godot-ci:4.3
+      image: barichello/godot-ci:${{ vars.GODOT_VERSION }}
     strategy:
       matrix:
-        channel: [web, windows, linuxbsd]
+        channel: [web, windows, linux]
     steps:
       - uses: actions/checkout@v4
-
-      - uses: xSAVIKx/artifact-exists-action@v0
-        with:
-          name: template-${{ matrix.channel }}
-
-      - uses: ./.github/workflows/godot-template-build.yml
-        with:
-          version: $env.GODOT_VERSION
-          platforms: '["${{ matrix.channel }}"]'
 
       - uses: ./.github/workflows/godot-build.yml
         with:
