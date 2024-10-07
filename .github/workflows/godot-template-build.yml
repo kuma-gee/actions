@@ -31,27 +31,21 @@ jobs:
       - run: |
           mkdir -p godot/bin
           touch godot/bin/$PLATFORM_release
-
-          if [ -d godot/bin ]; then
-            echo "::error::Godot bin folder not created"
-            exit 1
-          fi
-
-          if [ ! -d godot/bin/$PLATFORM_release ]; then
-            echo "::error::Godot template file not created"
-            exit 1
-          fi
-
         # if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
       
-      - run: ls godot/bin
+      - run: |
+          output=$(ls godot/bin)
+          echo "::debug::$output"
 
       - uses: actions/upload-artifact@v4
         with:
           name: template-${{ matrix.platform }}
-          path: godot/bin/**/*
+          path: |
+            godot/bin/*
+            bin/*
+          if-no-files-found: error
 
   release-godot-template:
     runs-on: ubuntu-latest
