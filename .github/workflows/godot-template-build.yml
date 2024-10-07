@@ -31,6 +31,7 @@ jobs:
       - run: |
           mkdir -p godot/bin
           touch godot/bin/$PLATFORM_release
+          ls godot/bin
         if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
