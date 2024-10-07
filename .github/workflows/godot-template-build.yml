@@ -43,7 +43,6 @@ jobs:
         with:
           name: template-${{ matrix.platform }}
           path: |
-            godot/bin/*
             bin/*
           if-no-files-found: error
 
