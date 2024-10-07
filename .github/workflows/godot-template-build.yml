@@ -9,12 +9,13 @@ on:
         type: string
         default: '4.3'
 
+env:
+  KEY: ${{ secrets.ENCRYPTION_KEY }}
+
 jobs:
   template-build:
     runs-on: ubuntu-latest
     if: ${{ env.KEY != '' }}
-    env:
-      KEY: ${{ secrets.ENCRYPTION_KEY }}
     strategy:
       matrix:
         platform: [linuxbsd, windows, web]
