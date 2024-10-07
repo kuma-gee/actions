@@ -21,6 +21,8 @@ jobs:
           KEY="$(openssl rand -hex 32)"
           gh secret set ENCRYPTION_KEY -b $KEY
           echo "key=$KEY" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   template-build:
     runs-on: ubuntu-latest
