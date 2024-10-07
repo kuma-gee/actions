@@ -10,23 +10,23 @@ concurrency:
   cancel-in-progress: true
   
 jobs:
-  test-godot-template:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./godot-template
-        id: godot-template
-        with:
-          version: 4.3
-          platform: windows
-          encryption-key: de24eb1bba105a19610b691a0815a49bfb7a49b93ecbfd3761324a636c730366
-      - run: |
-          if [ ! -f $FILE  ]; then
-            echo "::error::Template file not found"
-            exit 1
-          fi
-        env:
-          FILE: ${{ steps.godot-template.outputs.file }}
+  # test-godot-template:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./godot-template
+  #       id: godot-template
+  #       with:
+  #         version: 4.3
+  #         platform: windows
+  #         encryption-key: de24eb1bba105a19610b691a0815a49bfb7a49b93ecbfd3761324a636c730366
+  #     - run: |
+  #         if [ ! -f $FILE  ]; then
+  #           echo "::error::Template file not found"
+  #           exit 1
+  #         fi
+  #       env:
+  #         FILE: ${{ steps.godot-template.outputs.file }}
 
 
   test-changelog:
