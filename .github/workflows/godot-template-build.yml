@@ -16,6 +16,7 @@ jobs:
     outputs:
       key: ${{ steps.encryption.outputs.key }}
     steps:
+      - uses: actions/checkout@v4
       - id: encryption
         run: |
           KEY="$(openssl rand -hex 32)"
