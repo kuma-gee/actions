@@ -21,22 +21,20 @@ jobs:
         platform: [linux, windows]
     steps:
       - uses: actions/checkout@v4
-      # - uses: kuma-gee/action-godot/godot-template@main
-      #   if: ${{ ! inputs.debug }}
-      #   with:
-      #     version: ${{ vars.GODOT_VERSION }}
-      #     platform: ${{ matrix.platform }}
-      #     encryption-key: ${{ secrets.ENCRYPTION_KEY }}
+      - uses: kuma-gee/action-godot/godot-template@main
+        if: ${{ ! inputs.debug }}
+        with:
+          version: ${{ vars.GODOT_VERSION }}
+          platform: ${{ matrix.platform }}
+          encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
-      - run: mkdir -p godot/bin
-      - run: echo "Test" > godot/bin/release_$PLATFORM
+      - run: |
+          mkdir -p godot/bin
+          echo "Test" > godot/bin/release_$PLATFORM
+        if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
       
-      - run: ls
-      - run: ls godot
-      - run: ls godot/bin
-
       - uses: actions/upload-artifact@v4
         with:
           name: template-${{ matrix.platform }}
@@ -59,6 +57,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: false
-          files: bin/**/*
+          files: godot/bin/*
           name: Godot ${{ vars.GODOT_VERSION }} Templates
           tag_name: template-${{ vars.GODOT_VERSION }}
