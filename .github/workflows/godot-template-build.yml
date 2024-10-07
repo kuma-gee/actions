@@ -50,6 +50,10 @@ jobs:
         with:
           pattern: template-*
           merge-multiple: true
+      
+      - run: ls
+      - run: ls godot
+      - run: ls bin
 
       - name: Release
         uses: softprops/action-gh-release@v2
