@@ -4,6 +4,11 @@ GODOT_VERSION="$1"
 PLATFORM="$2"
 ENCRYPTION_KEY="$3"
 
+BUILD_PLATFORM="$PLATFORM"
+if [ $BUILD_PLATFORM == 'linux' ]; then
+    BUILD_PLATFORM='linuxbsd'
+fi
+
 TARGET="template_release"
 ARCH="x86_64"
 
