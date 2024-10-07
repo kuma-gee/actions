@@ -22,7 +22,7 @@ jobs:
           gh secret set ENCRYPTION_KEY -b $KEY
           echo "key=$KEY" >> $GITHUB_OUTPUT
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   template-build:
     runs-on: ubuntu-latest
