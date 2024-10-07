@@ -12,7 +12,9 @@ on:
 jobs:
   template-build:
     runs-on: ubuntu-latest
-    if: secrets.ENCRYPTION_KEY
+    if: ${{ env.KEY != '' }}
+    env:
+      KEY: ${{ secrets.ENCRYPTION_KEY }}
     strategy:
       matrix:
         platform: [linuxbsd, windows, web]
@@ -21,7 +23,7 @@ jobs:
         with:
           version: ${{ inputs.version }}
           platform: ${{ inputs.platform }}
-          encryption-key: ${{ secrets.ENCRYPTION_KEY }}
+          encryption-key: ${{ env.KEY }}
 
       - uses: actions/upload-artifact@v4
         with:
