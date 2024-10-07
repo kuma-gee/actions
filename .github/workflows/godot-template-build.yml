@@ -16,9 +16,6 @@ concurrency:
 jobs:
   template-build:
     runs-on: ubuntu-latest
-    env:
-      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
-    if: env.ENCRYPTION_KEY != ''
     strategy:
       matrix:
         platform: [linuxbsd, windows, web]
