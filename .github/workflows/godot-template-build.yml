@@ -28,10 +28,8 @@ jobs:
       #     platform: ${{ matrix.platform }}
       #     encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
-      - run: |
-          mkdir -p godot/bin
-          touch godot/bin/$PLATFORM_release
-        # if: ${{ inputs.debug }}
+      - run: mkdir -p godot/bin
+      - run: touch godot/bin/$PLATFORM_release
         env:
           PLATFORM: ${{ matrix.platform }}
       
@@ -42,8 +40,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: template-${{ matrix.platform }}
-          path: |
-            bin/*
+          path: godot/bin
           if-no-files-found: error
 
   release-godot-template:
