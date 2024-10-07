@@ -12,6 +12,7 @@ on:
 jobs:
   template-build:
     runs-on: ubuntu-latest
+    if: secrets.ENCRYPTION_KEY
     strategy:
       matrix:
         platform: [linuxbsd, windows, web]
