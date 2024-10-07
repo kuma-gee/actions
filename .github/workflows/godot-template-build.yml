@@ -32,7 +32,7 @@ jobs:
           mkdir -p godot/bin
           touch godot/bin/$PLATFORM_release
 
-          if [ ! -d godot/bin ]; then
+          if [ -d godot/bin ]; then
             echo "::error::Godot bin folder not created"
             exit 1
           fi
