@@ -21,20 +21,21 @@ jobs:
         platform: [linux, windows]
     steps:
       - uses: actions/checkout@v4
-      - uses: kuma-gee/action-godot/godot-template@main
-        if: ${{ ! inputs.debug }}
-        with:
-          version: ${{ vars.GODOT_VERSION }}
-          platform: ${{ matrix.platform }}
-          encryption-key: ${{ secrets.ENCRYPTION_KEY }}
+      # - uses: kuma-gee/action-godot/godot-template@main
+      #   if: ${{ ! inputs.debug }}
+      #   with:
+      #     version: ${{ vars.GODOT_VERSION }}
+      #     platform: ${{ matrix.platform }}
+      #     encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
       - run: |
           mkdir -p godot/bin
           touch godot/bin/$PLATFORM_release
-          ls godot/bin
-        if: ${{ inputs.debug }}
+        # if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
+      
+      - run: ls godot/bin
 
       - uses: actions/upload-artifact@v4
         with:
