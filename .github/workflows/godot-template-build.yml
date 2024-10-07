@@ -46,8 +46,6 @@ jobs:
     needs: template-build
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
           pattern: template-*
@@ -57,6 +55,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: false
-          files: godot/bin/*
+          files: godot/bin/**/*
           name: Godot ${{ vars.GODOT_VERSION }} Templates
           tag_name: template-${{ vars.GODOT_VERSION }}
