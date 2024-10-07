@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: kuma-gee/action-godot/godot-template@main
         with:
-          version: ${{ env.GODOT_VERSION }}
+          version: ${{ vars.GODOT_VERSION }}
           platform: ${{ matrix.platform }}
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
