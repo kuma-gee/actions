@@ -29,7 +29,7 @@ jobs:
       #     encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
       - run: mkdir -p godot/bin
-      - run: echo "Test" > godot/bin/$PLATFORM_release
+      - run: echo "Test" > godot/bin/release_$PLATFORM
         env:
           PLATFORM: ${{ matrix.platform }}
       
