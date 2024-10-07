@@ -31,6 +31,17 @@ jobs:
       - run: |
           mkdir -p godot/bin
           touch godot/bin/$PLATFORM_release
+
+          if [ ! -d godot/bin ];
+            echo "::error::Godot bin folder not created"
+            exit 1
+          fi
+
+          if [ ! -d godot/bin/$PLATFORM_release ];
+            echo "::error::Godot template file not created"
+            exit 1
+          fi
+
         # if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
