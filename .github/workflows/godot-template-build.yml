@@ -49,16 +49,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           pattern: template-*
+          path: bin
           merge-multiple: true
-      
-      - run: ls
-      - run: ls godot
-      - run: ls bin
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           prerelease: false
-          files: godot/bin/**/*
+          files: bin/*
           name: Godot ${{ vars.GODOT_VERSION }} Templates
           tag_name: template-${{ vars.GODOT_VERSION }}
