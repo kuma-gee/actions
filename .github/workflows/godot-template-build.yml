@@ -3,7 +3,7 @@ name: Build Godot Templates
 on:
   push:
     tags:
-      - template-v[0-9]+
+      - template-v*
 
 concurrency:
   group: ${{ github.workflow }}
