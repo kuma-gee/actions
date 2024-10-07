@@ -9,13 +9,22 @@ on:
         type: string
         default: '4.3'
 
-env:
-  KEY: ${{ secrets.ENCRYPTION_KEY }}
-
 jobs:
+  generate-encryption:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    outputs:
+      key: ${{ steps.encryption.outputs.key }}
+    steps:
+      - id: encryption
+        run: |
+          KEY="$(openssl rand -hex 32)"
+          gh secret set ENCRYPTION_KEY -b $KEY
+          echo "key=$KEY" >> $GITHUB_OUTPUT
+
   template-build:
     runs-on: ubuntu-latest
-    if: env.KEY != ''
+    needs: generate-encryption
     strategy:
       matrix:
         platform: [linuxbsd, windows, web]
@@ -24,7 +33,7 @@ jobs:
         with:
           version: ${{ inputs.version }}
           platform: ${{ inputs.platform }}
-          encryption-key: ${{ env.KEY }}
+          encryption-key: ${{ jobs.generate-encryption.outputs.key }}
 
       - uses: actions/upload-artifact@v4
         with:
