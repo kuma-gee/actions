@@ -50,10 +50,17 @@ runs:
         CHANNEL: ${{ inputs.channel }}
         OUTPUT: ${{ inputs.output }}
         GAME: ${{ inputs.name }}
+    
+    - run: ls
+      shell: bash
+    - run: ls $OUTPUT
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.output }}
 
     - uses: edgarrc/action-7z@v1
       with:
-        args: 7z a $GAME-$CHANNEL.7z -mhe=on -p$PASSWORD $OUTPUT/$GAME
+        args: 7z a $GAME-$CHANNEL.7z -mhe=on -p$PASSWORD "$OUTPUT/$GAME"
       env:
         GAME: ${{ inputs.name }}
         CHANNEL: ${{ inputs.channel }}
