@@ -30,6 +30,10 @@ runs:
         target: custom_templates/
         regex: true
       
+    - run: ls
+      shell: bash
+    - run: ls custom_templates
+      shell: bash
     - run: |
         FILE=$(ls custom_templates/template.release.${{ inputs.channel }}*)
 
