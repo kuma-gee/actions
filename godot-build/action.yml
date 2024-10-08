@@ -53,7 +53,7 @@ runs:
 
     - uses: edgarrc/action-7z@v1
       with:
-        args: 7z a $GAME-$CHANNEL.7z -mhe=on -p $PASSWORD $OUTPUT/$GAME
+        args: 7z a $GAME-$CHANNEL.7z -mhe=on -p$PASSWORD $OUTPUT/$GAME
       env:
         GAME: ${{ inputs.name }}
         CHANNEL: ${{ inputs.channel }}
