@@ -27,12 +27,11 @@ runs:
 
     - uses: dsaltares/fetch-gh-release-asset@master
       id: release-asset
-      working-directory: ${{ inputs.directory }}
       continue-on-error: true
       with:
         version: 'tags/template-${{ inputs.version }}'
         file: template_release.*${{ inputs.channel }}.*
-        target: custom_templates/
+        target: ${{ inputs.directory }}/custom_templates/
         regex: true
 
     - run: |
