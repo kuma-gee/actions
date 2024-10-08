@@ -11,6 +11,10 @@ on:
         description: 'Name of the release'
         type: string
         default: ''
+      add-changelog:
+        description: 'Add changelog to release'
+        type: boolean
+        default: false
     secrets:
       discord-webhook:
         required: false
@@ -25,7 +29,9 @@ jobs:
           fetch-depth: 0
 
       - uses: ./changelog
+
       - run: echo $CHANGELOG > CHANGELOG.md
+        if: ${{ inputs.add-changelog }}
         env:
           CHANGELOG: ${{ steps.changelog.outputs.changelog }}
 

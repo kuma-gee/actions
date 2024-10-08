@@ -2,6 +2,11 @@ name: Steam Release
 
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to release'
+        type: string
+        default: ''
 
 jobs:
   generate-password:
@@ -55,6 +60,7 @@ jobs:
           name: ${{ vars.GAME_NAME }}
 
       - uses: game-ci/steam-deploy@v3
+        if: github.event.inputs.branch != ''
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
@@ -64,19 +70,19 @@ jobs:
           depot1Path: StandaloneWindows64
           depot1InstallScriptPath: StandaloneWindows64/install_script.vdf
           depot2Path: StandaloneLinux64
-          releaseBranch: prerelease
+          releaseBranch: ${{ github.event.inputs.branch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.channel }}
-          path: build/**/*.7z
+          path: build/*.7z
 
   release-steam-github:
-    runs-on: ubuntu-latest
     needs: release
-    steps:
-      - uses: ./.github/workflows/github-release.yml
-        with:
-          artifact: release-*
-          name: $env.GAME_NAME
+    uses: ./.github/workflows/github-release.yml
+    with:
+      artifact: release-*
+      name: ${{ vars.GAME_NAME }}
+    secrets:
+      discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
