@@ -17,7 +17,7 @@ on:
         default: false
     secrets:
       discord-webhook:
-        required: false
+        required: true
 
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
             **/*.aab
 
       - name: Successful release!
-        if: success() && secrets.discord-webhook
+        if: success()
         uses: ./discord
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
@@ -58,7 +58,7 @@ jobs:
           message: "${{ steps.changelog.outputs.changelog }}"
 
       - name: Failed release!
-        if: failure() && secrets.discord-webhook
+        if: failure()
         uses: ./discord
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
