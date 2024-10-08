@@ -59,6 +59,7 @@ jobs:
           password: ${{ needs.generate-password.outputs.password }}
           output: build
           name: ${{ vars.GAME_NAME }}
+          game-folder: godot-game
 
       - uses: game-ci/steam-deploy@v3
         if: github.event.inputs.branch != ''

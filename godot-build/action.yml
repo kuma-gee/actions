@@ -14,7 +14,9 @@ inputs:
     required: true
   password:
     description: 'Password for the archive file'
-    required: false
+  game-folder:
+    description: 'Directory of the game'
+    default: '.'
 
 runs:
   using: "composite"
@@ -34,6 +36,7 @@ runs:
 
         godot --export-release --headless $CHANNEL $OUTPUT/$CHANNEL/$NAME$EXT
       shell: bash
+      working-directory: ${{ inputs.game-folder }}
       env:
         CHANNEL: ${{ inputs.channel }}
         OUTPUT: ${{ inputs.output }}
