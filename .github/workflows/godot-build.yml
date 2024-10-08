@@ -12,55 +12,52 @@ on:
         description: 'Output directory'
         required: true
         type: string
+      name:
+        description: 'Name of the game'
+        required: true
+        type: string
     secrets:
-      game-code:
-        description: 'Game code'
-        required: false
-      assets-password:
-        description: 'Password for the protected assets'
-        required: false
-      zip-password:
-        description: 'Password for the zip files'
+      password:
+        description: 'Password for the archive file'
         required: false
 
 jobs:
   build-godot:
     runs-on: ubuntu-latest
     steps:
-      - name: Unpack protected assets
-        uses: kuma-gee/action-protect-assets@v1
-        with:
-          path: assets
-          password: ${{ secrets.assets-password }}
-
-      - name: Create Godot Environment File
-        uses: kuma-gee/action-godot/godot-env@main
-        with:
-          output: src/build.gd
-          code: ${{ secrets.game-code }}
-          version: ${{ github.ref }}
-          steam-app: ${{ vars.STEAM_APP }}
-
-      - name: Setup Templates
-        uses: kuma-gee/action-godot/setup-template@main
-        with:
-          version: ${{ vars.GODOT_VERSION }}
-
       - name: Build
         run: |
           mkdir -v -p $OUTPUT/$CHANNEL
-          godot --export-release --headless $CHANNEL
+
+          EXT=""
+          if [ "$CHANNEL" = "web" ]; then
+            EXT=".html"
+          elif [ "$CHANNEL" = "linux" ]; then
+            EXT=".x86_64"
+          elif [ "$CHANNEL" = "windows" ]; then
+            EXT=".exe"
+          fi
+
+          godot --export-release --headless $CHANNEL $OUTPUT/$CHANNEL/$NAME$EXT
         shell: bash
         env:
           CHANNEL: ${{ inputs.channel }}
           OUTPUT: ${{ inputs.output }}
+          NAME: ${{ inputs.name }}
 
       - name: Zip builds
         run: |
           cd $OUTPUT
           mv $CHANNEL $GAME
-          zip -e -r $GAME-$CHANNEL.zip $GAME -P $PASSWORD
         env:
           CHANNEL: ${{ inputs.channel }}
           OUTPUT: ${{ inputs.output }}
+          GAME: ${{ inputs.name }}
+
+      - uses: edgarrc/action-7z@v1
+        with:
+          args: 7z a $GAME-$CHANNEL.7z -mhe=on -p $PASSWORD $OUTPUT/$GAME
+        env:
+          GAME: ${{ inputs.name }}
+          CHANNEL: ${{ inputs.channel }}
           PASSWORD: ${{ inputs.zip-password }}

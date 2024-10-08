@@ -1,9 +1,7 @@
 name: Steam Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_dispatch:
 
 jobs:
   generate-password:
@@ -15,7 +13,7 @@ jobs:
       - uses: ./.github/actions/password
         id: random-password
         with:
-          length: 16
+          length: 24
 
   release-steam:
     runs-on: ubuntu-latest
@@ -28,20 +26,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Unpack protected assets
+        uses: kuma-gee/action-protect-assets@v1
+        with:
+          path: assets
+          password: ${{ secrets.ASSETS_PASSWORD }}
+
+      - name: Create Godot Environment File
+        uses: kuma-gee/action-godot/godot-env@main
+        with:
+          output: src/build.gd
+          code: ${{ secrets.GAME_CODE }}
+          version: ${{ github.ref }}
+          steam-app: ${{ vars.STEAM_APP }}
+
+      - name: Setup Templates
+        uses: kuma-gee/action-godot/setup-template@main
+        with:
+          version: ${{ vars.GODOT_VERSION }}
+          channel: ${{ matrix.channel }}
+          encryption-key: ${{ secrets.ENCRYPTION_KEY }}
+
       - uses: ./.github/workflows/godot-build.yml
         with:
           channel: ${{ matrix.channel }}
-          assets-password: ${{ secrets.GODOT_ASSETS_PASSWORD }}
-          zip-password: ${{ needs.generate-password.outputs.password }}
-          game-code: ${{ secrets.GAME_CODE }}
-          output: godot-game/build
-          steam-app: $env.STEAM_APP
+          password: ${{ needs.generate-password.outputs.password }}
+          output: build
+          name: ${{ vars.GAME_NAME }}
 
       - uses: game-ci/steam-deploy@v3
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
-          appId: $env.STEAM_APP
+          appId: ${{ vars.STEAM_APP }}
           buildDescription: $GITHUB_REF_NAME
           rootPath: build
           depot1Path: StandaloneWindows64
@@ -53,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.channel }}
-          path: build/**/*.zip
+          path: build/**/*.7z
 
   release-steam-github:
     runs-on: ubuntu-latest
