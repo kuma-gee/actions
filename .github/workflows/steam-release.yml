@@ -53,7 +53,7 @@ jobs:
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
           directory: godot-game
 
-      - uses: kuma-gee/action-godot/godot-build.yml@main
+      - uses: kuma-gee/action-godot/godot-build@main
         with:
           channel: ${{ matrix.channel }}
           password: ${{ needs.generate-password.outputs.password }}

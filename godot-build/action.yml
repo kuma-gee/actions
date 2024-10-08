@@ -1,0 +1,57 @@
+name: 'Build godot'
+description: 'Build godot'
+
+inputs:
+  channel:
+    description: 'Channel to build'
+    required: true
+    default: 'win'
+  output:
+    description: 'Output directory'
+    required: true
+  name:
+    description: 'Name of the game'
+    required: true
+  password:
+    description: 'Password for the archive file'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build
+      run: |
+        mkdir -v -p $OUTPUT/$CHANNEL
+
+        EXT=""
+        if [ "$CHANNEL" = "web" ]; then
+          EXT=".html"
+        elif [ "$CHANNEL" = "linux" ]; then
+          EXT=".x86_64"
+        elif [ "$CHANNEL" = "windows" ]; then
+          EXT=".exe"
+        fi
+
+        godot --export-release --headless $CHANNEL $OUTPUT/$CHANNEL/$NAME$EXT
+      shell: bash
+      env:
+        CHANNEL: ${{ inputs.channel }}
+        OUTPUT: ${{ inputs.output }}
+        NAME: ${{ inputs.name }}
+
+    - run: |
+        cd $OUTPUT
+        mv $CHANNEL $GAME
+      shell: bash
+      env:
+        CHANNEL: ${{ inputs.channel }}
+        OUTPUT: ${{ inputs.output }}
+        GAME: ${{ inputs.name }}
+
+    - uses: edgarrc/action-7z@v1
+      with:
+        args: 7z a $GAME-$CHANNEL.7z -mhe=on -p $PASSWORD $OUTPUT/$GAME
+      env:
+        GAME: ${{ inputs.name }}
+        CHANNEL: ${{ inputs.channel }}
+        PASSWORD: ${{ inputs.password }}
