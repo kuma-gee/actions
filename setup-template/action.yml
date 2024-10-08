@@ -32,7 +32,7 @@ runs:
 
     - run: |
         FILE=$(ls custom_templates/template_release.${{ inputs.channel }}*)
-        FILE="\"custom_templates/${FILE}\""
+        FILE="\"${FILE}\""
         echo $FILE
 
         sed -e "/custom_template\/release/ s/\".*\"/$FILE/" -i export_presets.cfg
