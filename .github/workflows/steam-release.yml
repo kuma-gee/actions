@@ -51,7 +51,7 @@ jobs:
           version: ${{ vars.GODOT_VERSION }}
           channel: ${{ matrix.channel }}
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
-          directory: godot-game
+          game-folder: godot-game
 
       - uses: kuma-gee/action-godot/godot-build@main
         with:
