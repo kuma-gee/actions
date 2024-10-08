@@ -26,7 +26,7 @@ runs:
       continue-on-error: true
       with:
         version: 'tags/template-${{ inputs.version }}'
-        file: template_release\\.${{ inputs.channel }}.*
+        file: template_release.*${{ inputs.channel }}.*
         target: custom_templates/
         regex: true
       
