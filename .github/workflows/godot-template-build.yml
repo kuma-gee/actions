@@ -29,8 +29,8 @@ jobs:
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
       - run: |
-          mkdir -p godot/custom_templates
-          echo "Test" > godot/custom_templates/empty_test_template_$PLATFORM
+          mkdir -p custom_templates
+          echo "Test" > custom_templates/empty_test_template_$PLATFORM
         if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: template-${{ matrix.platform }}
-          path: godot/custom_templates/
+          path: custom_templates/
           if-no-files-found: error
 
   release-godot-template:
