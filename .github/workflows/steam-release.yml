@@ -51,6 +51,7 @@ jobs:
           version: ${{ vars.GODOT_VERSION }}
           channel: ${{ matrix.channel }}
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
+          directory: godot-game
 
       - uses: ./.github/workflows/godot-build.yml
         with:
