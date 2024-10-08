@@ -1,9 +1,8 @@
 name: 'Setup templates'
 description: 'Setup default godot templates and optionally custom templates with encryption'
 inputs:
-  directory:
+  game-folder:
     description: 'Directory of the game'
-    required: true
     default: '.'
   channel:
     description: 'Channel to build'
@@ -31,7 +30,7 @@ runs:
       with:
         version: 'tags/template-${{ inputs.version }}'
         file: template_release.*${{ inputs.channel }}.*
-        target: ${{ inputs.directory }}/custom_templates/
+        target: ${{ inputs.game-folder }}/custom_templates/
         regex: true
     
     # This file does not exist and we don't know how many export presets there are
@@ -46,7 +45,7 @@ runs:
           echo 'script_encryption_key="$KEY"' >> $FILE
         done
       shell: bash
-      working-directory: ${{ inputs.directory }}
+      working-directory: ${{ inputs.game-folder }}
       env:
         KEY: ${{ inputs.encryption-key }}
 
@@ -57,7 +56,7 @@ runs:
 
         sed -e "/custom_template\/release/ s:\".*\":$FILE:" -i export_presets.cfg
       shell: bash
-      working-directory: ${{ inputs.directory }}
+      working-directory: ${{ inputs.game-folder }}
       env:
         KEY: ${{ inputs.encryption-key }}
       if: steps.release-asset.conclusion == 'success'

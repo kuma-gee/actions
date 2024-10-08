@@ -34,7 +34,7 @@ runs:
           EXT=".exe"
         fi
 
-        godot --export-release --headless --path $FOLDER $CHANNEL $OUTPUT/$CHANNEL/$NAME$EXT
+        godot --export-release --headless --path $FOLDER $CHANNEL "$(pwd)/$OUTPUT/$CHANNEL/$NAME$EXT"
       shell: bash
       env:
         CHANNEL: ${{ inputs.channel }}
