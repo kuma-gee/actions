@@ -51,13 +51,6 @@ runs:
         OUTPUT: ${{ inputs.output }}
         GAME: ${{ inputs.name }}
     
-    - run: ls
-      shell: bash
-    - run: ls $OUTPUT
-      shell: bash
-      env:
-        OUTPUT: ${{ inputs.output }}
-
     - uses: kuma-gee/action-godot/7zip@main
       with:
         folder: "${{ inputs.output }}/${{ inputs.name}}"

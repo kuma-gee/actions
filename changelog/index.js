@@ -22,7 +22,7 @@ async function run() {
   try {
     let previousTag = core.getInput("previous-tag");
     if (previousTag === "") {
-      previousTag = exec("git tag | sort --version-sort | tail -n2 | head-1");
+      previousTag = exec("git tag | sort --version-sort | tail -n2 | head -1");
     }
 
     let latestTag = core.getInput("latest-tag");
