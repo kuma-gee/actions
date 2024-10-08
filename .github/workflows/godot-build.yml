@@ -41,7 +41,7 @@ jobs:
           version: ${{ github.ref }}
           steam-app: ${{ vars.STEAM_APP }}
 
-      - name: Unpack protected assets
+      - name: Setup Templates
         uses: kuma-gee/action-godot/setup-template@main
         with:
           version: ${{ vars.GODOT_VERSION }}

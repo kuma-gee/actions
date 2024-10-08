@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: kuma-gee/action-godot/godot-template@main
+        id: template
         if: ${{ ! inputs.debug }}
         with:
           version: ${{ vars.GODOT_VERSION }}
@@ -29,8 +30,10 @@ jobs:
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
 
       - run: |
-          mkdir -p godot/bin
-          echo "Test" > godot/bin/release_$PLATFORM
+          mkdir -p godot/custom_templates
+          echo "Test" > godot/custom_templates/empty_test_template_$PLATFORM
+          echo "file=godot/custom_templates/empty_test_template_$PLATFORM" >> $GITHUB_OUTPUT
+        id: template
         if: ${{ inputs.debug }}
         env:
           PLATFORM: ${{ matrix.platform }}
@@ -38,7 +41,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: template-${{ matrix.platform }}
-          path: godot/bin
+          path: godot/custom_templates/${{ steps.template.outputs.file }}
           if-no-files-found: error
 
   release-godot-template:

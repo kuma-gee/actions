@@ -15,8 +15,9 @@ runs:
         VERSION: ${{ inputs.version }}
 
     - uses: dsaltares/fetch-gh-release-asset@master
+      continue-on-error: true
       with:
         version: 'tags/template-${{ inputs.version }}'
-        file: godot\\..*
+        file: template\\.release\\..*
         target: custom_templates/
         regex: true

@@ -17,6 +17,6 @@ RUN apk add --no-cache \
   pulseaudio-dev \
   mingw-w64-gcc
 
-COPY setup-template.sh /setup-template.sh
+COPY build-template.sh /build-template.sh
 
 ENTRYPOINT ["/setup-template.sh"]

@@ -27,14 +27,26 @@ cd godot
 rm -rf editor
 
 export SCRIPT_AES256_ENCRYPTION_KEY="$ENCRYPTION_KEY"
-scons platform=$PLATFORM target=$TARGET arch=$ARCH tools=no debug_symbols=no \
+scons platform=$BUILD_PLATFORM target=$TARGET arch=$ARCH tools=no debug_symbols=no \
     optimize=size \
     module_text_server_adv_enabled=no module_text_server_fb_enabled=yes # Use fallback text server
 # lto=full 
 
 cd ../
 
-FILE=godot/bin/godot.$PLATFORM.$TARGET.$ARCH
-strip $FILE
+TEMPLATE_FILE=""
+FILE=""
+mkdir custom_templates
 
-echo "file=$FILE" >> $GITHUB_OUTPUT
+if [ $PLATFORM == 'windows' ]; then
+    FILE=godot/bin/godot.$BUILD_PLATFORM.$TARGET.$ARCH.exe
+    TEMPLATE_FILE=custom_templates/template.$TARGET.$PLATFORM.exe
+elif [ $PLATFORM == 'linux' ]; then
+    FILE=godot/bin/godot.$BUILD_PLATFORM.$TARGET.$ARCH
+    TEMPLATE_FILE=custom_templates/template.$TARGET.$PLATFORM.x86_64
+fi
+
+mv $FILE $TEMPLATE_FILE
+strip $TEMPLATE_FILE
+
+echo "file=$TEMPLATE_FILE" >> $GITHUB_OUTPUT
