@@ -45,9 +45,9 @@ jobs:
         with:
           body_path: CHANGELOG.md
           prerelease: false
+          tag_name: ${{ inputs.name }}
           files: |
-            **/*.zip
-            **/*.aab
+            **/*.7z
 
       - name: Successful release!
         if: success()
