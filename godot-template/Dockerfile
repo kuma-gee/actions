@@ -19,4 +19,4 @@ RUN apk add --no-cache \
 
 COPY build-template.sh /build-template.sh
 
-ENTRYPOINT ["/setup-template.sh"]
+ENTRYPOINT ["/build-template.sh"]
