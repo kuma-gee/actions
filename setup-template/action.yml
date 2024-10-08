@@ -35,7 +35,7 @@ runs:
     - run: ls custom_templates
       shell: bash
     - run: |
-        FILE=$(ls custom_templates/template.release.${{ inputs.channel }}*)
+        FILE=$(ls custom_templates/template_release.${{ inputs.channel }}*)
 
         sed -e "/custom_template\/release/ s/\".*\"/\"custom_templates/$FILE\"/" -i export_presets.cfg
         sed -e "/script_encryption_key/ s/\".*\"/\"$KEY\"/"  -i .godot/export_credentials.cfg
