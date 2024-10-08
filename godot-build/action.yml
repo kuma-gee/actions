@@ -34,13 +34,13 @@ runs:
           EXT=".exe"
         fi
 
-        godot --export-release --headless $CHANNEL $OUTPUT/$CHANNEL/$NAME$EXT
+        godot --export-release --headless --path $FOLDER $CHANNEL $OUTPUT/$CHANNEL/$NAME$EXT
       shell: bash
-      working-directory: ${{ inputs.game-folder }}
       env:
         CHANNEL: ${{ inputs.channel }}
         OUTPUT: ${{ inputs.output }}
         NAME: ${{ inputs.name }}
+        FOLDER: ${{ inputs.game-folder }}
 
     - run: |
         cd $OUTPUT
