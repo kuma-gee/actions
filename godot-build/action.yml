@@ -58,11 +58,8 @@ runs:
       env:
         OUTPUT: ${{ inputs.output }}
 
-    - uses: edgarrc/action-7z@v1
+    - uses: kuma-gee/action-godot/7zip
       with:
-        args: 7z a $GAME-$CHANNEL.7z -mhe=on -p$PASSWORD "$OUTPUT/$GAME"
-      env:
-        GAME: ${{ inputs.name }}
-        CHANNEL: ${{ inputs.channel }}
-        PASSWORD: ${{ inputs.password }}
-        OUTPUT: ${{ inputs.output }}
+        folder: "${{ inputs.output }}/${{ inputs.name}}"
+        password: ${{ inputs.password }}
+        output: ${{ inputs.output }}/${{ inputs.name }}-${{ inputs.channel }}.7z

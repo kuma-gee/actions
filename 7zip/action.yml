@@ -1,0 +1,21 @@
+name: 'Protected Asset'
+description: 'Unpack your protected assets files using a password'
+inputs:
+  folder:
+    description: 'Path to the folder containing the protected archives'
+    required: true
+    default: '.'
+  password:
+    description: 'Password for the protected archives'
+    required: true
+    default: ''
+  output:
+    description: 'Path to folder where to unpack the files (default: same folder as archives)'
+    default: ''
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.folder}}
+    - ${{ inputs.output }}
+    - ${{ inputs.password }}
