@@ -79,7 +79,7 @@ jobs:
           path: build/*.7z
 
   release-steam-github:
-    needs: release
+    needs: release-steam
     uses: ./.github/workflows/github-release.yml
     with:
       artifact: release-*
