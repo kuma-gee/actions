@@ -58,3 +58,4 @@ runs:
         GAME: ${{ inputs.name }}
         CHANNEL: ${{ inputs.channel }}
         PASSWORD: ${{ inputs.password }}
+        OUTPUT: ${{ inputs.output }}
