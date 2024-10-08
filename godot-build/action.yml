@@ -58,7 +58,7 @@ runs:
       env:
         OUTPUT: ${{ inputs.output }}
 
-    - uses: kuma-gee/action-godot/7zip
+    - uses: kuma-gee/action-godot/7zip@main
       with:
         folder: "${{ inputs.output }}/${{ inputs.name}}"
         password: ${{ inputs.password }}
