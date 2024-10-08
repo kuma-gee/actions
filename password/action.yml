@@ -14,7 +14,9 @@ runs:
   steps:
     - name: Generate random password
       id: random-password
-      run: echo "password=$(tr -dc A-Za-z0-9 </dev/urandom | head -c $LENGTH; echo)" >> $GITHUB_OUTPUT
+      run: |
+        PASSWORD="$(tr -dc A-Za-z0-9 </dev/urandom | head -c $LENGTH; echo)"
+        echo "password=$PASSWORD" >> $GITHUB_OUTPUT
       shell: bash
       env:
         LENGTH: ${{ inputs.length }}
