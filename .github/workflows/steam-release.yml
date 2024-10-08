@@ -15,7 +15,7 @@ jobs:
       password: ${{ steps.random-password.outputs.password }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/password
+      - uses: kuma-gee/action-godot/password@main
         id: random-password
         with:
           length: 24
