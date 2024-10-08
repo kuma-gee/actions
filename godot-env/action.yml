@@ -38,6 +38,13 @@ runs:
       shell: bash
       env:
         CODE: ${{ inputs.code }}
+    
+    - run: |
+        DIR="$(dirname $OUTPUT)"
+        mkdir -p $DIR
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.output }}
 
     - name: Generate Build File
       run: |

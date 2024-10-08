@@ -40,7 +40,7 @@ jobs:
       - name: Create Godot Environment File
         uses: kuma-gee/action-godot/godot-env@main
         with:
-          output: src/build.gd
+          output: godot/build.gd
           code: ${{ secrets.GAME_CODE }}
           version: ${{ github.ref }}
           steam-app: ${{ vars.STEAM_APP }}
