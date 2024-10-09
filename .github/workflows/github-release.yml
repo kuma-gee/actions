@@ -74,7 +74,6 @@ jobs:
         if: success()
         uses: ./discord
         with:
-          body: CHANGELOG.md
           discord-webhook: ${{ secrets.discord-webhook }}
           title: "${{ inputs.name }} - New Release ${{ github.ref }}"
           message: "Changes ${{ steps.changelog.outputs.changelog }}"
