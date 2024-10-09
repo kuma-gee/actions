@@ -13,8 +13,9 @@ try {
 
   const msg = core.getInput("message");
 
+  core.debug(`Sending message: ${msg}`);
   webhookClient.send({
-    content: msg,
+    content: msg ?? 'No message provided',
     embeds: [embed],
   });
 
