@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to release'
+        description: 'Steam branch to release'
         type: string
         default: ''
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   generate-password:
