@@ -35,7 +35,8 @@ runs:
     
     # This file does not exist and we don't know how many export presets there are
     # So just creat a bunch of them, would be nice to have a better way to set it...
-    - run: |
+    - if: steps.release-asset.outcome == 'success'
+      run: |
         mkdir -p .godot
         FILE=".godot/export_credentials.cfg"
         echo "" > $FILE
@@ -49,7 +50,8 @@ runs:
       env:
         KEY: ${{ inputs.encryption-key }}
 
-    - run: |
+    - if: steps.release-asset.outcome == 'success'
+      run: |
         FILE=$(ls custom_templates/template_release.${{ inputs.channel }}*)
         FILE="\"${FILE}\""
         echo $FILE
@@ -59,4 +61,3 @@ runs:
       working-directory: ${{ inputs.game-folder }}
       env:
         KEY: ${{ inputs.encryption-key }}
-      if: steps.release-asset.conclusion == 'success'
