@@ -11,6 +11,10 @@ on:
         description: 'Notify on discord'
         type: boolean
         default: true
+      demo:
+        description: 'Release demo'
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}
@@ -67,6 +71,19 @@ jobs:
           output: build
           game-folder: ${{ vars.PROJECT_PATH }}
           password: ${{ needs.generate-password.outputs.password }}
+      
+      - id: steam-app
+        run: |
+          STEAM_ID=$MAIN_ID
+          if [ $DEMO = true ]; then
+            STEAM_ID=$DEMO_ID
+          fi
+
+          echo "id=$STEAM_ID" >> $GITHUB_OUTPUT
+        env:
+          DEMO: ${{ github.event.inputs.demo }}
+          MAIN_ID: ${{ vars.STEAM_APP }}
+          DEMO_ID: ${{ vars.STEAM_DEMO_APP }}
 
       # TODO: test
       - uses: game-ci/steam-deploy@v3
@@ -74,7 +91,7 @@ jobs:
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
-          appId: ${{ vars.STEAM_APP }}
+          appId: ${{ steps.steam-app.outputs.id }}
           buildDescription: $GITHUB_REF_NAME
           rootPath: build
           depot1Path: StandaloneWindows64
