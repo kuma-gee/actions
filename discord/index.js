@@ -13,10 +13,11 @@ try {
   const embed = new discord.EmbedBuilder().setTitle(title).setDescription(msg).setColor(0x00ffff);
 
   core.debug(`Sending message: ${msg}`);
-  webhookClient.send({
-    content: msg ?? 'No message provided',
-    // embeds: [embed],
-  });
+  webhookClient.send(msg);
+  // webhookClient.send({
+  //   content: msg ?? 'No message provided',
+  //   // embeds: [embed],
+  // });
 
 } catch (error) {
   core.setFailed(error.message);
