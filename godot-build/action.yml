@@ -9,11 +9,6 @@ inputs:
   output:
     description: 'Output directory'
     required: true
-  name:
-    description: 'Name of the game'
-    required: true
-  password:
-    description: 'Password for the archive file'
   game-folder:
     description: 'Directory of the game'
     default: '.'
@@ -34,25 +29,25 @@ runs:
           EXT=".exe"
         fi
 
+        NAME="$(cat $FOLDER/project.godot | grep config/name | awk -F'"' '{print $2}')"
         godot --export-release --headless --path $FOLDER $CHANNEL "$(pwd)/$OUTPUT/$CHANNEL/$NAME$EXT"
       shell: bash
       env:
         CHANNEL: ${{ inputs.channel }}
         OUTPUT: ${{ inputs.output }}
-        NAME: ${{ inputs.name }}
         FOLDER: ${{ inputs.game-folder }}
 
-    - run: |
-        cd $OUTPUT
-        mv $CHANNEL $GAME
-      shell: bash
-      env:
-        CHANNEL: ${{ inputs.channel }}
-        OUTPUT: ${{ inputs.output }}
-        GAME: ${{ inputs.name }}
+    # - run: |
+    #     cd $OUTPUT
+    #     mv $CHANNEL $GAME
+    #   shell: bash
+    #   env:
+    #     CHANNEL: ${{ inputs.channel }}
+    #     OUTPUT: ${{ inputs.output }}
+    #     GAME: ${{ inputs.name }}
     
-    - uses: kuma-gee/action-godot/7zip@main
-      with:
-        folder: "${{ inputs.output }}/${{ inputs.name}}"
-        password: ${{ inputs.password }}
-        output: ${{ inputs.output }}/${{ inputs.name }}-${{ inputs.channel }}.7z
+    # - uses: kuma-gee/action-godot/7zip@main
+    #   with:
+    #     folder: "${{ inputs.output }}/${{ inputs.name}}"
+    #     password: ${{ inputs.password }}
+    #     output: ${{ inputs.output }}/${{ inputs.name }}-${{ inputs.channel }}.7z

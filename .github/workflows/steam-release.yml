@@ -13,20 +13,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  generate-password:
-    runs-on: ubuntu-latest
-    outputs:
-      password: ${{ steps.random-password.outputs.password }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: kuma-gee/action-godot/password@main
-        id: random-password
-        with:
-          length: 24
+  # generate-password:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     password: ${{ steps.random-password.outputs.password }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: kuma-gee/action-godot/password@main
+  #       id: random-password
+  #       with:
+  #         length: 24
 
   release-steam:
     runs-on: ubuntu-latest
-    needs: generate-password
     container:
       image: barichello/godot-ci:${{ vars.GODOT_VERSION }}
     strategy:
@@ -60,11 +59,10 @@ jobs:
       - uses: kuma-gee/action-godot/godot-build@main
         with:
           channel: ${{ matrix.channel }}
-          password: ${{ needs.generate-password.outputs.password }}
           output: build
-          name: ${{ vars.GAME_NAME }}
           game-folder: godot-game
 
+      # TODO: test
       - uses: game-ci/steam-deploy@v3
         if: github.event.inputs.branch != ''
         with:
@@ -82,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.channel }}
-          path: build/*.7z
+          path: build/*
 
   release-steam-github:
     needs: release-steam
