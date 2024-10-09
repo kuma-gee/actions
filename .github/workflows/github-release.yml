@@ -18,7 +18,11 @@ on:
       add-changelog:
         description: 'Add changelog to release'
         type: boolean
-        default: false
+        default: true
+      notify:
+        description: 'Notify on discord'
+        type: boolean
+        default: true
     secrets:
       discord-webhook:
         required: true
@@ -51,13 +55,13 @@ jobs:
 
       - id: build-name
         run: |
-          TAG=$GAME_NAME
+          TAG="$GAME_NAME-${{ github.ref_name }}"
           if [ ! -z "$BRANCH" ]; then
             TAG="$TAG-$BRANCH"
           fi
 
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "name=Release $GAME_NAME $BRANCH" >> $GITHUB_OUTPUT
+          echo "name=Release $GAME_NAME ${{github.ref_name}} $BRANCH" >> $GITHUB_OUTPUT
         env:
           GAME_NAME: ${{ inputs.name }}
           BRANCH: ${{ inputs.branch }}
@@ -78,7 +82,7 @@ jobs:
         uses: ./discord
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
-          title: "${{ inputs.name }} - New Release ${{ github.ref }}"
+          title: "${{ inputs.name }} - New Release ${{ github.ref_name }} ${{ inputs.branch }}"
           message: "${{ steps.changelog.outputs.changelog }} \n\nPassword: ${{ secrets.password }}\n${{ steps.release.outputs.url }}"
 
       - name: Failed release!
@@ -86,6 +90,6 @@ jobs:
         uses: ./discord
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
-          title: "${{ inputs.name }} - Failed Release ${{ github.ref }}"
+          title: "${{ inputs.name }} - Failed Release ${{ github.ref_name }} ${{ inputs.branch }}"
           message: "See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           failure: true

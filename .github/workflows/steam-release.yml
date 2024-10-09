@@ -7,6 +7,10 @@ on:
         description: 'Steam branch to release'
         type: string
         default: ''
+      notify:
+        description: 'Notify on discord'
+        type: boolean
+        default: true
 
 concurrency:
   group: ${{ github.workflow }}
@@ -91,6 +95,7 @@ jobs:
       artifact: release-*
       name: ${{ vars.GAME_NAME }}
       branch: ${{ inputs.branch }}
+      notify: ${{ inputs.notify }}
     secrets:
       discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
       password: ${{ needs.generate-password.outputs.password }}
