@@ -51,6 +51,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           pattern: release-*
+          path: release-files
           merge-multiple: true
 
       - id: build-name
@@ -75,7 +76,7 @@ jobs:
           name: ${{ steps.build-name.outputs.name }}
           tag_name: ${{ steps.build-name.outputs.tag }}
           files: |
-            **/*.7z
+            release-files/*.7z
       
       - name: Successful release!
         if: success()
