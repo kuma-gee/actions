@@ -35,6 +35,9 @@ jobs:
         env:
           CHANGELOG: ${{ steps.changelog.outputs.changelog }}
 
+      - run: echo "" > CHANGELOG.md
+        if: ${{ ! inputs.add-changelog }}
+
       - uses: actions/download-artifact@v4
         with:
           pattern: release-*
