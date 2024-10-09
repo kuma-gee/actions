@@ -12,11 +12,15 @@ inputs:
   game-folder:
     description: 'Directory of the game'
     default: '.'
+  password:
+    description: 'Password for the files'
+    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Build
+      id: build
       run: |
         mkdir -v -p $OUTPUT/$CHANNEL
 
@@ -30,6 +34,8 @@ runs:
         fi
 
         NAME="$(cat $FOLDER/project.godot | grep config/name | awk -F'"' '{print $2}')"
+        echo "game=$NAME" >> $GITHUB_OUTPUT
+
         godot --export-release --headless --path $FOLDER $CHANNEL "$(pwd)/$OUTPUT/$CHANNEL/$NAME$EXT"
       shell: bash
       env:
@@ -37,17 +43,17 @@ runs:
         OUTPUT: ${{ inputs.output }}
         FOLDER: ${{ inputs.game-folder }}
 
-    # - run: |
-    #     cd $OUTPUT
-    #     mv $CHANNEL $GAME
-    #   shell: bash
-    #   env:
-    #     CHANNEL: ${{ inputs.channel }}
-    #     OUTPUT: ${{ inputs.output }}
-    #     GAME: ${{ inputs.name }}
+    - run: |
+        cd $OUTPUT
+        mv $CHANNEL $GAME
+      shell: bash
+      env:
+        CHANNEL: ${{ inputs.channel }}
+        OUTPUT: ${{ inputs.output }}
+        GAME: ${{ steps.build.outputs.game }}
     
-    # - uses: kuma-gee/action-godot/7zip@main
-    #   with:
-    #     folder: "${{ inputs.output }}/${{ inputs.name}}"
-    #     password: ${{ inputs.password }}
-    #     output: ${{ inputs.output }}/${{ inputs.name }}-${{ inputs.channel }}.7z
+    - uses: kuma-gee/action-godot/7zip@main
+      with:
+        folder: "${{ inputs.output }}/${{ steps.build.outputs.game }}"
+        password: ${{ inputs.password }}
+        output: ${{ inputs.output }}/${{ steps.build.outputs.game }}-${{ inputs.channel }}.7z

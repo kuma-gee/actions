@@ -11,6 +11,9 @@ inputs:
   message:
     description: 'Message'
     default: ''
+  failure:
+    description: 'Failure'
+    default: ''
 runs:
   using: 'node20'
   main: 'index.js'

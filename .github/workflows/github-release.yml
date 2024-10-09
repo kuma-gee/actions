@@ -22,6 +22,9 @@ on:
     secrets:
       discord-webhook:
         required: true
+      password:
+        description: 'Password for the files'
+        required: false
 
 jobs:
   github-release:
@@ -60,6 +63,7 @@ jobs:
           BRANCH: ${{ inputs.branch }}
 
       - name: Release
+        id: release
         uses: softprops/action-gh-release@v2
         with:
           body_path: CHANGELOG.md
@@ -75,7 +79,7 @@ jobs:
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
           title: "${{ inputs.name }} - New Release ${{ github.ref }}"
-          message: "Changes ${{ steps.changelog.outputs.changelog }}"
+          message: "${{ steps.changelog.outputs.changelog }} \n\nPassword: ${{ secrets.password }}\n${{ steps.release.outputs.url }}"
 
       - name: Failed release!
         if: failure()
@@ -84,3 +88,4 @@ jobs:
           discord-webhook: ${{ secrets.discord-webhook }}
           title: "${{ inputs.name }} - Failed Release ${{ github.ref }}"
           message: "See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          failure: true
