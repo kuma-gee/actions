@@ -93,7 +93,6 @@ jobs:
     uses: kuma-gee/action-godot/.github/workflows/github-release.yml
     with:
       artifact: release-*
-      name: ${{ vars.GAME_NAME }}
       branch: ${{ inputs.branch }}
       notify: ${{ inputs.notify }}
     secrets:

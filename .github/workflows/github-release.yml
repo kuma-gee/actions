@@ -55,15 +55,15 @@ jobs:
 
       - id: build-name
         run: |
-          TAG="$GAME_NAME-${{ github.ref_name }}"
+          NAME="$(echo ${{ github.repository }} | cut -d'/' -f2)"
+          TAG="$NAME-${{ github.ref_name }}"
           if [ ! -z "$BRANCH" ]; then
             TAG="$TAG-$BRANCH"
           fi
 
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "name=Release $GAME_NAME ${{github.ref_name}} $BRANCH" >> $GITHUB_OUTPUT
+          echo "name=Release $NAME ${{ github.ref_name }} $BRANCH" >> $GITHUB_OUTPUT
         env:
-          GAME_NAME: ${{ inputs.name }}
           BRANCH: ${{ inputs.branch }}
 
       - name: Release
