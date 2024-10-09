@@ -83,6 +83,7 @@ jobs:
   release-steam-github:
     needs: release-steam
     uses: ./.github/workflows/github-release.yml
+    if: ${{ secrets.DISCORD_WEBHOOK != '' }}
     with:
       artifact: release-*
       name: ${{ vars.GAME_NAME }}-${{ inputs.branch }}
