@@ -100,18 +100,16 @@ jobs:
           MAIN_ID: ${{ vars.STEAM_APP }}
           DEMO_ID: ${{ vars.STEAM_DEMO_APP }}
 
-      # TODO: test
       - uses: game-ci/steam-deploy@v3
         if: github.event.inputs.branch != ''
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
           appId: ${{ steps.steam-app.outputs.id }}
-          buildDescription: $GITHUB_REF_NAME
+          buildDescription: ${{ github.ref_name }}
           rootPath: build
-          depot1Path: StandaloneWindows64
-          depot1InstallScriptPath: StandaloneWindows64/install_script.vdf
-          depot2Path: StandaloneLinux64
+          depot1Path: windows
+          depot2Path: linux
           releaseBranch: ${{ github.event.inputs.branch }}
 
       - name: Upload artifacts
