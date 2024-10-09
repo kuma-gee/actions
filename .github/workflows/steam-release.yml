@@ -54,7 +54,11 @@ jobs:
       image: barichello/godot-ci:${{ vars.GODOT_VERSION }}
     strategy:
       matrix:
-        channel: [windows, linux]
+        include:
+          - channel: windows
+            depotId: 1
+          - channel: linux
+            depotId: 2
     steps:
       - uses: actions/checkout@v4
 
@@ -108,9 +112,11 @@ jobs:
           appId: ${{ steps.steam-app.outputs.id }}
           buildDescription: ${{ github.ref_name }}
           rootPath: build
-          depot1Path: windows
-          depot2Path: linux
+          depot${{matrix.depotId}}Path: ${{ matrix.channel }}
           releaseBranch: ${{ github.event.inputs.branch }}
+      
+      - run: ls build
+        if: failure()
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
