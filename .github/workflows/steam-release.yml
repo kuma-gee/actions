@@ -85,6 +85,7 @@ jobs:
     uses: ./.github/workflows/github-release.yml
     with:
       artifact: release-*
-      name: ${{ vars.GAME_NAME }}-${{ inputs.branch }}
+      name: ${{ vars.GAME_NAME }}
+      branch: ${{ inputs.branch }}
     secrets:
       discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
