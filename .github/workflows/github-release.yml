@@ -38,7 +38,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: ./changelog
+      - uses: kuma-gee/action-godot/changelog@main
 
       - run: echo $CHANGELOG > CHANGELOG.md
         if: ${{ inputs.add-changelog }}
@@ -79,7 +79,7 @@ jobs:
       
       - name: Successful release!
         if: success()
-        uses: ./discord
+        uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
           title: "${{ inputs.name }} - New Release ${{ github.ref_name }} ${{ inputs.branch }}"
@@ -87,7 +87,7 @@ jobs:
 
       - name: Failed release!
         if: failure()
-        uses: ./discord
+        uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
           title: "${{ inputs.name }} - Failed Release ${{ github.ref_name }} ${{ inputs.branch }}"
