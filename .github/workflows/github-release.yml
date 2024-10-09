@@ -55,7 +55,7 @@ jobs:
           fi
 
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "name=\"Release $GAME_NAME $BRANCH\"" >> $GITHUB_OUTPUT
+          echo "name=Release $GAME_NAME $BRANCH" >> $GITHUB_OUTPUT
         env:
           GAME_NAME: ${{ inputs.name }}
           BRANCH: ${{ inputs.branch }}
