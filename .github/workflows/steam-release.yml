@@ -83,9 +83,8 @@ jobs:
   release-steam-github:
     needs: release-steam
     uses: ./.github/workflows/github-release.yml
-    if: ${{ secrets.DISCORD_RELEASE_HOOK != '' }}
     with:
       artifact: release-*
       name: ${{ vars.GAME_NAME }}-${{ inputs.branch }}
     secrets:
-      discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK}}
+      discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
