@@ -45,7 +45,7 @@ runs:
 
     - run: |
         cd $OUTPUT
-        mv $CHANNEL $GAME
+        cp $CHANNEL $GAME -r
       shell: bash
       env:
         CHANNEL: ${{ inputs.channel }}
