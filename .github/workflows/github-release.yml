@@ -11,6 +11,10 @@ on:
         description: 'Name of the release'
         type: string
         default: ''
+      branch:
+        description: 'Branch to release'
+        type: string
+        default: ''
       add-changelog:
         description: 'Add changelog to release'
         type: boolean
@@ -43,22 +47,37 @@ jobs:
           pattern: release-*
           merge-multiple: true
 
+      - id: build-name
+        run: |
+          TAG=$GAME_NAME
+          if [ ! -z "$BRANCH" ]; then
+            TAG="$TAG-$BRANCH"
+          fi
+
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo 'name="Release $GAME_NAME $BRANCH"' >> $GITHUB_OUTPUT
+        env:
+          GAME_NAME: ${{ inputs.name }}
+          BRANCH: ${{ inputs.branch }}
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           body_path: CHANGELOG.md
           prerelease: false
-          tag_name: ${{ inputs.name }}
+          name: ${{ steps.build-name.outputs.name }}
+          tag_name: ${{ steps.build-name.outputs.tag }}
           files: |
             **/*.7z
-
+      
       - name: Successful release!
         if: success()
         uses: ./discord
         with:
+          body: CHANGELOG.md
           discord-webhook: ${{ secrets.discord-webhook }}
           title: "${{ inputs.name }} - New Release ${{ github.ref }}"
-          message: "${{ steps.changelog.outputs.changelog }}"
+          message: "Changes ${{ steps.changelog.outputs.changelog }}"
 
       - name: Failed release!
         if: failure()
