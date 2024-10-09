@@ -23,7 +23,6 @@ on:
       discord-webhook:
         required: true
 
-
 jobs:
   github-release:
     runs-on: ubuntu-latest

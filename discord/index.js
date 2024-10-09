@@ -14,8 +14,8 @@ try {
 
   core.debug(`Sending message: ${msg}`);
   webhookClient.send({
-    // content: msg ?? 'No message provided',
-    embeds: [embed],
+    content: msg ?? 'No message provided',
+    // embeds: [embed],
   });
 
 } catch (error) {
