@@ -48,7 +48,7 @@ jobs:
       - name: Create Godot Environment File
         uses: kuma-gee/action-godot/godot-env@main
         with:
-          output: godot/build.gd
+          output: ${{ vars.PROJECT_PATH }}/build.gd
           code: ${{ secrets.GAME_CODE }}
           version: ${{ github.ref }}
           steam-app: ${{ vars.STEAM_APP }}
@@ -59,13 +59,13 @@ jobs:
           version: ${{ vars.GODOT_VERSION }}
           channel: ${{ matrix.channel }}
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
-          game-folder: godot-game
+          game-folder: ${{ vars.PROJECT_PATH }}
 
       - uses: kuma-gee/action-godot/godot-build@main
         with:
           channel: ${{ matrix.channel }}
           output: build
-          game-folder: godot-game
+          game-folder: ${{ vars.PROJECT_PATH }}
           password: ${{ needs.generate-password.outputs.password }}
 
       # TODO: test
