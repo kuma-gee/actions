@@ -4,4 +4,5 @@ FOLDER="$1"
 OUTPUT="$2"
 PASSWORD="$3"
 
-7z a "$OUTPUT" "$FOLDER" -p"$PASSWORD" -mhe=on
+cd "$FOLDER"
+7z a "$OUTPUT" * -p"$PASSWORD" -mhe=on
