@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
   libxi-dev \
   libxrandr-dev \
   libwayland-dev \
-  mingw-w64-gcc
+  gcc-mingw-w64
 
 COPY build-template.sh /build-template.sh
 
