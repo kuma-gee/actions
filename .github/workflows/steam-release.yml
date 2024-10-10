@@ -114,9 +114,6 @@ jobs:
           rootPath: build
           depot${{matrix.depotId}}Path: ${{ matrix.channel }}
           releaseBranch: ${{ github.event.inputs.branch }}
-      
-      - run: ls build
-        if: failure()
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
