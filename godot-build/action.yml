@@ -49,6 +49,6 @@ runs:
 
     - uses: kuma-gee/action-godot/7zip@main
       with:
-        folder: "${{ inputs.output }}/${{ inputs.channel }}/*"
+        folder: ${{ inputs.output }}/${{ inputs.channel }}
         password: ${{ inputs.password }}
         output: ${{ inputs.output }}/${{ steps.game-name.outputs.game }}-${{ inputs.channel }}.7z
