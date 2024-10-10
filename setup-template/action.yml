@@ -57,6 +57,10 @@ runs:
         echo $FILE
 
         sed -e "/custom_template\/release/ s:\".*\":$FILE:" -i export_presets.cfg
+        sed -e "/encrypt_pck/c\encrypt_pck=true" -i export_presets.cfg
+        sed -e "/encryption_include_filters/c\encryption_include_filters=\"*\"" -i export_presets.cfg
+
+        cat export_presets.cfg
       shell: bash
       working-directory: ${{ inputs.game-folder }}
       env:
