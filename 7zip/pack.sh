@@ -4,4 +4,7 @@ FOLDER="$1"
 OUTPUT="$2"
 PASSWORD="$3"
 
-7z a "$OUTPUT" "$FOLDER" -p"$PASSWORD" -mhe=on
+CURRENT="$(pwd)"
+
+cd "$FOLDER"
+7z a "$CURRENT/$OUTPUT" * -p"$PASSWORD" -mhe=on
