@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
   gcc-mingw-w64 \
   g++-mingw-w64
 
-RUN update-alternatives --config x86_64-w64-mingw32-g++
+RUN update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
 COPY build-template.sh /build-template.sh
 
