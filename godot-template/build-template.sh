@@ -28,7 +28,7 @@ rm -rf editor
 
 export SCRIPT_AES256_ENCRYPTION_KEY="$ENCRYPTION_KEY"
 scons platform=$BUILD_PLATFORM target=$TARGET arch=$ARCH tools=no debug_symbols=no \
-    optimize=size \
+    optimize=size production=yes \
     module_text_server_adv_enabled=no module_text_server_fb_enabled=yes # Use fallback text server
 # lto=full 
 
