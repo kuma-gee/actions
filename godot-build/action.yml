@@ -51,4 +51,4 @@ runs:
       with:
         folder: "${{ inputs.output }}/${{ inputs.channel }}"
         password: ${{ inputs.password }}
-        output: ${{ inputs.output }}/${{ steps.build.outputs.game }}-${{ inputs.channel }}.7z
+        output: ${{ inputs.output }}/${{ steps.game-name.outputs.game }}-${{ inputs.channel }}.7z
