@@ -38,10 +38,10 @@ TEMPLATE_FILE=""
 FILE=""
 mkdir custom_templates
 
-if [ "$PLATFORM" == "windows" ]; then
+if [ "$PLATFORM" = "windows" ]; then
     FILE=godot/bin/godot.$BUILD_PLATFORM.$TARGET.$ARCH.exe
     TEMPLATE_FILE=custom_templates/$TARGET.$PLATFORM.exe
-elif [ "$PLATFORM" == "linux" ]; then
+elif [ "$PLATFORM" = "linux" ]; then
     FILE=godot/bin/godot.$BUILD_PLATFORM.$TARGET.$ARCH
     TEMPLATE_FILE=custom_templates/$TARGET.$PLATFORM.x86_64
 fi
