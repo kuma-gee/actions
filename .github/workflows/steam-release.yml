@@ -28,10 +28,6 @@ on:
         description: 'Path to the build env file relative to the project'
         type: string
         default: 'build.gd'
-      password:
-        description: 'Password for github release'
-        type: string
-        default: ''
       release-discord:
         description: 'Release for discord'
         type: boolean
@@ -55,6 +51,9 @@ on:
         required: false
       DISCORD_RELEASE_HOOK:
         description: 'Discord release hook'
+        required: false
+      ARCHIVE_PASSWORD:
+        description: 'Password for the archive'
         required: false
 
 concurrency:
@@ -105,7 +104,7 @@ jobs:
           channel: ${{ matrix.channel }}
           output: build
           game-folder: ${{ inputs.project-path }}
-          password: ${{ inputs.password }}
+          password: ${{ secrets.ARCHIVE_PASSWORD }}
       
       - uses: game-ci/steam-deploy@v3
         if: github.event.inputs.branch != ''
