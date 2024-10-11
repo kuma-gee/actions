@@ -135,7 +135,7 @@ jobs:
 
   release-steam-github:
     needs: [release-steam, generate-password]
-    uses: kuma-gee/action-godot/github-release.yml@main
+    uses: kuma-gee/action-godot/.github/workflows/github-release.yml@main
     if: github.event.inputs.release-discord
     with:
       artifact: release-*
