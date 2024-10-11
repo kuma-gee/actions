@@ -7,18 +7,10 @@ on:
         description: 'Artifact patterns to download'
         required: true
         type: string
-      name:
-        description: 'Name of the release'
-        type: string
-        default: ''
       branch:
         description: 'Branch to release'
         type: string
         default: ''
-      add-changelog:
-        description: 'Add changelog to release'
-        type: boolean
-        default: true
     secrets:
       discord-webhook:
         required: true
@@ -37,12 +29,8 @@ jobs:
       - uses: kuma-gee/action-godot/changelog@main
 
       - run: echo $CHANGELOG > CHANGELOG.md
-        if: ${{ inputs.add-changelog }}
         env:
           CHANGELOG: ${{ steps.changelog.outputs.changelog }}
-
-      - run: echo "" > CHANGELOG.md
-        if: ${{ ! inputs.add-changelog }}
 
       - uses: actions/download-artifact@v4
         with:
@@ -79,7 +67,7 @@ jobs:
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
-          title: "${{ inputs.name }} - New Release ${{ github.ref_name }} ${{ inputs.branch }}"
+          title: "${{ steps.build-name.name }} - New Release"
           message: "${{ steps.changelog.outputs.changelog }} \n\nPassword: ${{ secrets.password }}\n${{ steps.release.outputs.url }}"
 
       - name: Failed release!
@@ -87,6 +75,6 @@ jobs:
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
-          title: "${{ inputs.name }} - Failed Release ${{ github.ref_name }} ${{ inputs.branch }}"
+          title: "${{ steps.build-name.name }} - Failed Release"
           message: "See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           failure: true
