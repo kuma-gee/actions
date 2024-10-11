@@ -102,7 +102,7 @@ jobs:
           steam-app: ${{ inputs.steam_app }}
 
       - name: Setup Templates
-        uses: kuma-gee/action-godot/setup-template@main
+        uses: kuma-gee/action-godot-template/setup@v1
         with:
           version: ${{ inputs.godot-version }}
           channel: ${{ matrix.channel }}
