@@ -4,11 +4,6 @@ GODOT_VERSION="$1"
 PLATFORM="$2"
 ENCRYPTION_KEY="$3"
 
-BUILD_PLATFORM="$PLATFORM"
-if [ $BUILD_PLATFORM == 'linux' ]; then
-    BUILD_PLATFORM='linuxbsd'
-fi
-
 TARGET="template_release"
 ARCH="x86_64"
 
@@ -27,25 +22,19 @@ cd godot
 rm -rf editor
 
 export SCRIPT_AES256_ENCRYPTION_KEY="$ENCRYPTION_KEY"
-scons platform=$BUILD_PLATFORM target=$TARGET arch=$ARCH tools=no debug_symbols=no \
+scons platform=$PLATFORM target=$TARGET arch=$ARCH tools=no debug_symbols=no \
     optimize=size production=yes \
     module_text_server_adv_enabled=no module_text_server_fb_enabled=yes # Use fallback text server
 # lto=full 
 
 cd ../
 
-TEMPLATE_FILE=""
-FILE=""
+FILE="$(ls godot/bin/godot.$PLATFORM*.$TARGET.$ARCH*)"
+EXT="${FILE##*.}"
+TEMPLATE_FILE=custom_templates/$TARGET.$PLATFORM.$EXT
 mkdir custom_templates
 
-if [ "$PLATFORM" = "windows" ]; then
-    FILE=godot/bin/godot.$BUILD_PLATFORM.$TARGET.$ARCH.exe
-    TEMPLATE_FILE=custom_templates/$TARGET.$PLATFORM.exe
-elif [ "$PLATFORM" = "linux" ]; then
-    FILE=godot/bin/godot.$BUILD_PLATFORM.$TARGET.$ARCH
-    TEMPLATE_FILE=custom_templates/$TARGET.$PLATFORM.x86_64
-fi
-
+ls godot/bin
 echo "Moving $FILE to $TEMPLATE_FILE"
 mv $FILE $TEMPLATE_FILE
 strip $TEMPLATE_FILE
