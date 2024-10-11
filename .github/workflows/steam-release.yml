@@ -40,10 +40,10 @@ on:
     secrets:
       STEAM_USERNAME:
         description: 'Steam username'
-        required: true
+        required: false 
       STEAM_CONFIG_VDF:
         description: 'Steam config.vdf'
-        required: true
+        required: false
       ENCRYPTION_KEY:
         description: 'Encryption key'
         required: false
