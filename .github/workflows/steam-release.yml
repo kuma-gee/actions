@@ -28,6 +28,10 @@ on:
         description: 'Path to the build env file relative to the project'
         type: string
         default: 'build.gd'
+      password:
+        description: 'Password for github release'
+        type: string
+        default: ''
       release-discord:
         description: 'Release for discord'
         type: boolean
@@ -58,22 +62,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  generate-password:
-    runs-on: ubuntu-latest
-    outputs:
-      password: ${{ steps.random-password.outputs.password }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: kuma-gee/action-godot/password@main
-        id: random-password
-        with:
-          length: 24
-
   release-steam:
     runs-on: ubuntu-latest
-    needs: [generate-password]
-    container:
-      image: barichello/godot-ci:${{ inputs.godot-version }}
+    container: barichello/godot-ci:${{ inputs.godot-version }}
     strategy:
       matrix:
         include:
@@ -114,7 +105,7 @@ jobs:
           channel: ${{ matrix.channel }}
           output: build
           game-folder: ${{ inputs.project-path }}
-          password: ${{ needs.generate-password.outputs.password }}
+          password: ${{ inputs.password }}
       
       - uses: game-ci/steam-deploy@v3
         if: github.event.inputs.branch != ''
@@ -134,7 +125,7 @@ jobs:
           path: build/*.7z
 
   release-steam-github:
-    needs: [release-steam, generate-password]
+    needs: [release-steam]
     uses: kuma-gee/action-godot/.github/workflows/github-release.yml@main
     if: github.event.inputs.release-discord
     with:
@@ -142,4 +133,4 @@ jobs:
       branch: ${{ inputs.branch }}
     secrets:
       discord-webhook: ${{ secrets.DISCORD_RELEASE_HOOK }}
-      password: ${{ needs.generate-password.outputs.password }}
+      password: ${{ inputs.password }}
