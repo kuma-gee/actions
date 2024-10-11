@@ -26,15 +26,15 @@ runs:
 
     - uses: dsaltares/fetch-gh-release-asset@master
       id: release-asset
-      continue-on-error: ${{ inputs.encryption-key == '' }}
+      if: ${{ inputs.encryption-key }}
       with:
         version: 'tags/template-${{ inputs.version }}'
         file: template_release.*${{ inputs.channel }}.*
         target: ${{ inputs.game-folder }}/custom_templates/
         regex: true
     
-    # This file does not exist and we don't know how many export presets there are
-    # So just creat a bunch of them, would be nice to have a better way to set it...
+    # The credentials file does not exist and we don't know how many export presets there are
+    # So just create a bunch of them, would be nice to have a better way to set it...
     - if: steps.release-asset.outcome == 'success'
       run: |
         mkdir -p .godot

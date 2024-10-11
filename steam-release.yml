@@ -3,33 +3,55 @@ name: Steam Release
 on:
   workflow_call:
     inputs:
+      steam_app:
+        description: 'Steam App ID'
+        type: number
+        default: 430
+        required: true
       branch:
         description: 'Steam branch to release'
         type: string
         default: ''
+      godot-version:
+        description: 'Godot version'
+        type: string
+        default: '4.3'
+      project-path:
+        description: 'Path to the project'
+        type: string
+        default: '.'
+      assets-path:
+        description: 'Path to the assets relative to the project'
+        type: string
+        default: 'assets'
+      env-build-file:
+        description: 'Path to the build env file relative to the project'
+        type: string
+        default: 'build.gd'
       release-discord:
         description: 'Release for discord'
-        type: boolean
-        default: false
-      demo:
-        description: 'Release demo'
         type: boolean
         default: false
 
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Steam branch to release'
-        type: string
-        default: ''
-      release-discord:
-        description: 'Release for discord'
-        type: boolean
-        default: false
-      demo:
-        description: 'Release demo'
-        type: boolean
-        default: false
+    secrets:
+      STEAM_USERNAME:
+        description: 'Steam username'
+        required: true
+      STEAM_CONFIG_VDF:
+        description: 'Steam config.vdf'
+        required: true
+      ENCRYPTION_KEY:
+        description: 'Encryption key'
+        required: false
+      GAME_CODE:
+        description: 'Game code'
+        required: false
+      ASSETS_PASSWORD:
+        description: 'Password for the assets'
+        required: false
+      DISCORD_RELEASE_HOOK:
+        description: 'Discord release hook'
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}
@@ -51,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-password]
     container:
-      image: barichello/godot-ci:${{ vars.GODOT_VERSION }}
+      image: barichello/godot-ci:${{ inputs.godot-version }}
     strategy:
       matrix:
         include:
@@ -63,53 +85,43 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Unpack protected assets
+        if: env.ASSETS_PASSWORD
         uses: kuma-gee/action-protect-assets@v1
         with:
-          path: ${{ vars.PROJECT_PATH }}/assets
+          path: ${{ inputs.project-path }}/${{ inputs.assets-path }}
           password: ${{ secrets.ASSETS_PASSWORD }}
+        env:
+          ASSETS_PASSWORD: ${{ secrets.ASSETS_PASSWORD }}
 
       - name: Create Godot Environment File
         uses: kuma-gee/action-godot/godot-env@main
         with:
-          output: ${{ vars.PROJECT_PATH }}/build.gd
+          output: ${{ inputs.project-path }}/${{ inputs.env-build-file }}
           code: ${{ secrets.GAME_CODE }}
           version: ${{ github.ref }}
-          steam-app: ${{ vars.STEAM_APP }}
+          steam-app: ${{ inputs.steam_app }}
 
       - name: Setup Templates
         uses: kuma-gee/action-godot/setup-template@main
         with:
-          version: ${{ vars.GODOT_VERSION }}
+          version: ${{ inputs.godot-version }}
           channel: ${{ matrix.channel }}
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
-          game-folder: ${{ vars.PROJECT_PATH }}
+          game-folder: ${{ inputs.project-path }}
 
       - uses: kuma-gee/action-godot/godot-build@main
         with:
           channel: ${{ matrix.channel }}
           output: build
-          game-folder: ${{ vars.PROJECT_PATH }}
+          game-folder: ${{ inputs.project-path }}
           password: ${{ needs.generate-password.outputs.password }}
       
-      - id: steam-app
-        run: |
-          STEAM_ID=$MAIN_ID
-          if [ $DEMO = true ]; then
-            STEAM_ID=$DEMO_ID
-          fi
-
-          echo "id=$STEAM_ID" >> $GITHUB_OUTPUT
-        env:
-          DEMO: ${{ github.event.inputs.demo }}
-          MAIN_ID: ${{ vars.STEAM_APP }}
-          DEMO_ID: ${{ vars.STEAM_DEMO_APP }}
-
       - uses: game-ci/steam-deploy@v3
         if: github.event.inputs.branch != ''
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
-          appId: ${{ steps.steam-app.outputs.id }}
+          appId: ${{ inputs.steam_app }}
           buildDescription: ${{ github.ref_name }}
           rootPath: build
           depot${{matrix.depotId}}Path: ${{ matrix.channel }}
@@ -123,7 +135,7 @@ jobs:
 
   release-steam-github:
     needs: [release-steam, generate-password]
-    uses: kuma-gee/action-godot/.github/workflows/github-release.yml@main
+    uses: kuma-gee/action-godot/github-release.yml@main
     if: github.event.inputs.release-discord
     with:
       artifact: release-*
