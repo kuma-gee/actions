@@ -42,9 +42,9 @@ jobs:
         run: |
           NAME="$(echo ${{ github.repository }} | cut -d'/' -f2)"
           TAG="${{ github.ref_name }}"
-          if [ ! -z "$BRANCH" ]; then
-            TAG="$TAG-$BRANCH"
-          fi
+          # if [ ! -z "$BRANCH" ]; then
+          #   TAG="$TAG-$BRANCH"
+          # fi
 
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "name=Release $NAME ${{ github.ref_name }} $BRANCH" >> $GITHUB_OUTPUT
@@ -67,7 +67,7 @@ jobs:
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
-          title: "${{ steps.build-name.name }} - New Release"
+          title: "${{ github.repository }} - New Release ${{ github.ref_name}}"
           message: "${{ steps.changelog.outputs.changelog }} \n\nPassword: ${{ secrets.password }}\n${{ steps.release.outputs.url }}"
 
       - name: Failed release!
@@ -75,6 +75,6 @@ jobs:
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
-          title: "${{ steps.build-name.name }} - Failed Release"
+          title: "${{ github.repository }} - Failed Release ${{ github.ref_name}}"
           message: "See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           failure: true
