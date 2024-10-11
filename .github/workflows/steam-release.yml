@@ -98,7 +98,7 @@ jobs:
         with:
           output: ${{ inputs.project-path }}/${{ inputs.env-build-file }}
           code: ${{ secrets.GAME_CODE }}
-          version: ${{ github.ref }}
+          version: ${{ github.ref_name }}
           steam-app: ${{ inputs.steam_app }}
 
       - name: Setup Templates
