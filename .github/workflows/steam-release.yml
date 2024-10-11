@@ -116,7 +116,7 @@ jobs:
           password: ${{ needs.generate-password.outputs.password }}
       
       - uses: game-ci/steam-deploy@v3
-        if: github.event.inputs.branch != ''
+        if: inputs.branch != ''
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
@@ -124,7 +124,7 @@ jobs:
           buildDescription: ${{ github.ref_name }}
           rootPath: build
           depot${{matrix.depotId}}Path: ${{ matrix.channel }}
-          releaseBranch: ${{ github.event.inputs.branch }}
+          releaseBranch: ${{ inputs.branch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -135,7 +135,7 @@ jobs:
   release-steam-github:
     needs: [generate-password, release-steam]
     uses: kuma-gee/action-godot/.github/workflows/github-release.yml@main
-    if: github.event.inputs.release-discord
+    if: inputs.release-discord
     with:
       artifact: release-*
       branch: ${{ inputs.branch }}
