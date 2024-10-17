@@ -10,6 +10,35 @@ concurrency:
   cancel-in-progress: true
   
 jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./godot-build
+        with:
+          channel: windows
+          output: build
+          game-folder: godot-game
+          password: secret-password
+      - run: |
+          if [ ! -f build/windows/main.exe ]; then
+            echo "::error::Build failed"
+            exit 1
+          fi
+
+          if [ ! -f build/windows.zip ]; then
+            echo "::error::Zip file missing"
+            exit 1
+          fi
+
+          if [ $GAME != "godot-game" ]; then
+            echo "::error::Game name is not godot-game"
+            exit 1
+          fi
+        shell: bash
+        env:
+          GAME: ${{ steps.godot-build.outputs.game }}
+
   test-changelog:
     runs-on: ubuntu-latest
     steps:

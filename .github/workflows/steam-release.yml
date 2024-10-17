@@ -68,18 +68,16 @@ jobs:
         id: random-password
         with:
           length: 24
-
-  release-steam:
+  
+  build-game:
     runs-on: ubuntu-latest
     needs: generate-password
     container: barichello/godot-ci:${{ inputs.godot-version }}
     strategy:
       matrix:
-        include:
-          - channel: windows
-            depotId: 1
-          - channel: linux
-            depotId: 2
+        channel: [windows, linux]
+    outputs:
+      game: ${{ steps.game-name.outputs.game }}
     steps:
       - uses: actions/checkout@v4
 
@@ -115,27 +113,44 @@ jobs:
           game-folder: ${{ inputs.project-path }}
           password: ${{ needs.generate-password.outputs.password }}
       
-      - uses: game-ci/steam-deploy@v3
-        if: inputs.branch != ''
-        with:
-          username: ${{ secrets.STEAM_USERNAME }}          
-          configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
-          appId: ${{ inputs.steam_app }}
-          buildDescription: ${{ github.ref_name }}
-          rootPath: build
-          depot${{matrix.depotId}}Path: ${{ matrix.channel }}
-          releaseBranch: ${{ inputs.branch }}
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.channel }}
           path: build/*.zip
 
+  release-steam:
+    needs: [generate-password, build-game]
+    runs-on: ubuntu-latest
+    if: inputs.branch != ''
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          merge-multiple: true
+      
+      - run: |
+          unzip -P $PASSWORD -d linux $GAME-linux.zip
+          unzip -P $PASSWORD -d linux $GAME-windows.zip
+        env:
+          PASSWORD: ${{ needs.generate-password.outputs.password }}
+          GAME: ${{ needs.build-game.outputs.game }}
+
+      - uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}          
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
+          appId: ${{ inputs.steam_app }}
+          buildDescription: ${{ github.ref_name }}
+          rootPath: build
+          depot1Path: windows
+          depot2Path: linux
+          releaseBranch: ${{ inputs.branch }}
+
   release-steam-github:
-    needs: [generate-password, release-steam]
+    needs: [generate-password, build-game]
     uses: kuma-gee/action-godot/.github/workflows/github-release.yml@main
-    # if: inputs.release-discord
+    if: inputs.release-discord
     with:
       artifact: release-*
       branch: ${{ inputs.branch }}

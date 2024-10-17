@@ -16,6 +16,11 @@ inputs:
     description: 'Password for the files'
     required: false
 
+outputs:
+  game:
+    description: 'Game name'
+    value: ${{ steps.game-name.outputs.game }}
+
 runs:
   using: "composite"
   steps:
