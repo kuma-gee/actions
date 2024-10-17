@@ -12,9 +12,11 @@ concurrency:
 jobs:
   test-build:
     runs-on: ubuntu-latest
+    container: barichello/godot-ci:4.3
     steps:
       - uses: actions/checkout@v4
-      - uses: ./godot-build
+      - id: godot-build
+        uses: ./godot-build
         with:
           channel: windows
           output: build
@@ -26,18 +28,27 @@ jobs:
             exit 1
           fi
 
-          if [ ! -f build/windows.zip ]; then
+          if [ ! -f build/godot-game-windows.zip ]; then
             echo "::error::Zip file missing"
             exit 1
           fi
 
-          if [ $GAME != "godot-game" ]; then
+          unzip -d output -P $PASSWORD build/godot-game-windows.zip
+          ls output
+
+          if [ ! -f output/main.exe ]; then
+            echo "::error::main.exe missing in zip"
+            exit 1
+          fi
+
+          if [ "$GAME" != "godot-game" ]; then
             echo "::error::Game name is not godot-game"
             exit 1
           fi
         shell: bash
         env:
           GAME: ${{ steps.godot-build.outputs.game }}
+          PASSWORD: secret-password
 
   test-changelog:
     runs-on: ubuntu-latest
