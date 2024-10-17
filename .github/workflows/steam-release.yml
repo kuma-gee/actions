@@ -130,7 +130,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.channel }}
-          path: build/*.7z
+          path: build/*.zip
 
   release-steam-github:
     needs: [generate-password, release-steam]

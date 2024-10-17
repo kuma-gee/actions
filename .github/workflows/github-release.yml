@@ -60,7 +60,7 @@ jobs:
           name: ${{ steps.build-name.outputs.name }}
           tag_name: ${{ steps.build-name.outputs.tag }}
           files: |
-            release-files/*.7z
+            release-files/*.zip
       
       - name: Successful release!
         if: success()

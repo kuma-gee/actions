@@ -48,8 +48,11 @@ runs:
         OUTPUT: ${{ inputs.output }}
         FOLDER: ${{ inputs.game-folder }}
 
-    - uses: kuma-gee/action-godot/7zip@main
-      with:
+    - run: |
+        cd $folder
+        zip -r $output -e -p "$password" *
+      shell: bash
+      env:
         folder: ${{ inputs.output }}/${{ inputs.channel }}
         password: ${{ inputs.password }}
-        output: ${{ inputs.output }}/${{ steps.game-name.outputs.game }}-${{ inputs.channel }}.7z
+        output: ${{ inputs.output }}/${{ steps.game-name.outputs.game }}-${{ inputs.channel }}.zip
