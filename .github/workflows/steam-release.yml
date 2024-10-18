@@ -3,7 +3,7 @@ name: Steam Release
 on:
   workflow_call:
     inputs:
-      steam_app:
+      steam-app:
         description: 'Steam App ID'
         type: number
         default: 430
@@ -37,7 +37,7 @@ jobs:
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
-          appId: ${{ inputs.steam_app }}
+          appId: ${{ inputs.steam-app }}
           buildDescription: ${{ github.ref_name }}
           rootPath: build
           depot1Path: windows
