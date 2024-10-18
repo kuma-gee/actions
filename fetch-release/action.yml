@@ -26,6 +26,7 @@ runs:
         mkdir -p $OUTPUT
 
         OUTPUT_PATH="$(pwd)/$OUTPUT"
+        echo "Unzipping to $OUTPUT_PATH"
 
         cd files
         for FILE in *; do

@@ -36,8 +36,10 @@ runs:
       run: |
         mkdir -v -p $OUTPUT/$CHANNEL
 
+        FILE="main"
         EXT=""
         if [ "$CHANNEL" = "web" ]; then
+          FILE="index"
           EXT=".html"
         elif [ "$CHANNEL" = "linux" ]; then
           EXT=".x86_64"
@@ -46,7 +48,7 @@ runs:
         fi
 
         godot --headless --path $FOLDER --import
-        godot --export-release --headless --path $FOLDER $CHANNEL "$(pwd)/$OUTPUT/$CHANNEL/main$EXT"
+        godot --export-release --headless --path $FOLDER $CHANNEL "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT"
       shell: bash
       env:
         CHANNEL: ${{ inputs.channel }}
@@ -54,7 +56,10 @@ runs:
         FOLDER: ${{ inputs.game-folder }}
 
     - run: |
-        zip -r $output -e -P $password -j $folder
+        cd $folder
+        zip -r $output -e -P $password *
+
+        unzip -l $output -e -P $password
       shell: bash
       env:
         folder: ${{ inputs.output }}/${{ inputs.channel }}
