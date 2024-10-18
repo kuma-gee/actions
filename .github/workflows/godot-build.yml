@@ -41,7 +41,12 @@ on:
         required: false
     
     outputs:
-      game: ${{ jobs.build-game.outputs.game }}
+      game:
+        description: 'Game name'
+        value: ${{ jobs.build-game.outputs.game }}
+      password:
+        description: 'Generated password'
+        value: ${{ jobs.generate-password.outputs.password }}
 
 jobs:
   generate-password:
