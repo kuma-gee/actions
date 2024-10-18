@@ -2,11 +2,6 @@ name: Github release with changelog and discord notification
 
 on:
   workflow_call:
-    inputs:
-      artifact:
-        description: 'Artifact patterns to download'
-        required: true
-        type: string
     secrets:
       discord-webhook:
         required: true
