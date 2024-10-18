@@ -35,9 +35,15 @@ jobs:
           artifacts: release-${{ matrix.channel }}
           password: ${{ secrets.PASSWORD }}
           output: build
+      
+      - name: Install Butler
+        run: |
+          wget -O butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
 
       - name: Publish Itch
-        run: butler push build/$CHANNEL $USER/$GAME:$CHANNEL --userversion $GITHUB_REF_NAME
+        run: ./butler push build/$CHANNEL $USER/$GAME:$CHANNEL --userversion $GITHUB_REF_NAME
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
           USER: ${{ inputs.itch-user }}
