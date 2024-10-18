@@ -7,10 +7,6 @@ on:
         description: 'Artifact patterns to download'
         required: true
         type: string
-      branch:
-        description: 'Branch to release'
-        type: string
-        default: ''
     secrets:
       discord-webhook:
         required: true
@@ -27,6 +23,8 @@ jobs:
           fetch-depth: 0
 
       - uses: kuma-gee/action-godot/changelog@main
+        with:
+          latest-tag: ${{ github.ref_name }}
 
       - run: echo $CHANGELOG > CHANGELOG.md
         env:
@@ -42,14 +40,9 @@ jobs:
         run: |
           NAME="$(echo ${{ github.repository }} | cut -d'/' -f2)"
           TAG="${{ github.ref_name }}"
-          # if [ ! -z "$BRANCH" ]; then
-          #   TAG="$TAG-$BRANCH"
-          # fi
 
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "name=Release $NAME ${{ github.ref_name }} $BRANCH" >> $GITHUB_OUTPUT
-        env:
-          BRANCH: ${{ inputs.branch }}
+          echo "name=Release $NAME ${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
       - name: Release
         id: release

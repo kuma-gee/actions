@@ -1,0 +1,40 @@
+name: 'Fetch Release'
+description: 'Fetch release artifacts from godot-build'
+inputs:
+  artifacts:
+    description: 'Artifacts to download'
+    required: true
+    default: 'release-*'
+  password:
+    description: 'Password for the files'
+    required: true
+  output:
+    description: 'Output folder'
+    required: true
+    default: 'releases'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: ${{ inputs.artifacts }}
+        path: files
+        merge-multiple: true
+    
+    - run: |
+        mkdir -p $OUTPUT
+
+        OUTPUT_PATH="$(pwd)/$OUTPUT"
+
+        cd files
+        for FILE in *; do
+          filename=${FILE%.*}
+          channel=${filename##*-}
+
+          unzip -P $PASSWORD -d $OUTPUT_PATH/$channel $FILE
+        done
+      shell: sh
+      env:
+        PASSWORD: ${{ needs.generate-password.outputs.password }}
+        OUTPUT: ${{ inputs.output }}
