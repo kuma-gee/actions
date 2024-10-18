@@ -47,7 +47,6 @@ runs:
           EXT=".exe"
         fi
 
-        godot --headless --path $FOLDER --import
         godot --export-release --headless --path $FOLDER $CHANNEL "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT"
       shell: bash
       env:
