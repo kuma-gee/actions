@@ -36,5 +36,5 @@ runs:
         done
       shell: sh
       env:
-        PASSWORD: ${{ needs.generate-password.outputs.password }}
+        PASSWORD: ${{ inputs.password }}
         OUTPUT: ${{ inputs.output }}
