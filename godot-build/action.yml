@@ -57,7 +57,6 @@ runs:
 
     - run: |
         zip -r $output -e -P $password -j $folder
-        unzip -l $output -e -P $password
       shell: bash
       env:
         folder: ${{ inputs.output }}/${{ inputs.channel }}
