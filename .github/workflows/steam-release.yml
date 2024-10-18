@@ -27,7 +27,7 @@ jobs:
   release-steam:
     runs-on: ubuntu-latest
     steps:
-      - uses: kuma-gee/action-godot/fetch-release
+      - uses: kuma-gee/action-godot/fetch-release@main
         with:
           artifacts: release-*
           password: ${{ secrets.PASSWORD }}
