@@ -7,7 +7,7 @@ on:
         description: 'Channels to build'
         required: true
         type: string
-      steam_app:
+      steam-app:
         description: 'Steam App ID'
         type: number
         default: 430
@@ -86,7 +86,7 @@ jobs:
           output: ${{ inputs.project-path }}/${{ inputs.env-build-file }}
           code: ${{ secrets.GAME_CODE }}
           version: ${{ github.ref_name }}
-          steam-app: ${{ inputs.steam_app }}
+          steam-app: ${{ inputs.steam-app }}
 
       - name: Setup Templates
         uses: kuma-gee/action-godot-template/setup@v1
