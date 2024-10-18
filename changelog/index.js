@@ -1,46 +1,90 @@
 const core = require("@actions/core");
+const github = require("@actions/github");
 const process = require("child_process");
-const changelog = (...args) =>
-  import("conventional-changelog").then(({ default: changelog }) =>
-    changelog(...args)
-  );
-
-function streamToString(stream) {
-  const chunks = [];
-  return new Promise((resolve, reject) => {
-    stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
-    stream.on("error", (err) => reject(err));
-    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-  });
-}
 
 function exec(command) {
   return process.execSync(command).toString().trim();
 }
 
+function getTags() {
+  let previousTag = core.getInput("previous-tag");
+  if (previousTag === "") {
+    previousTag = exec("git tag --sort=creatordate | tail -n1");
+  }
+
+  let latestTag = core.getInput("latest-tag");
+  if (latestTag === "") {
+    latestTag = 'HEAD';
+  }
+
+  return [previousTag, latestTag];
+}
+
+function groupBy(array, keyFn, mapper = (x) => x) {
+  return array.reduce((acc, item) => {
+    const group = keyFn(item);
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(mapper(item));
+    return acc;
+  }, {});
+}
+
+const KEYWORDS = {
+  feat: "Features",
+  fix: "Bug Fixes",
+  others: "Others",
+};
+
+const ORDER = ["feat", "fix", "others"];
+
+// Use our own changelog generator, library has problems and will be difficult to customize
+function generateChangelog(previousTag, latestTag, includeOthers = false) {
+  console.log("Generating changelog for tags:", previousTag, latestTag);
+  const githubUrl = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}`;
+  const logs = exec(`git log --pretty='%h %H %s' ${previousTag}..${latestTag}`);
+  const data = logs
+    .split("\n")
+    .map((line) => {
+      const [hash, fullHash, ...message] = line.split(" ");
+      let [type, text] = message.join(" ").split(":");
+      if (!text && includeOthers) {
+        text = type;
+        type = 'others';
+      }
+
+      if (!ORDER.includes(type)) return null;
+
+      text = text.trim();
+      return {
+        type,
+        message: `* ${text} [${hash}](${githubUrl}/commit/${fullHash})`,
+      };
+    })
+    .filter((x) => !!x);
+
+  const grouped = groupBy(
+    data,
+    (item) => item.type,
+    (item) => item.message
+  );
+
+  const title = `## [${latestTag}](${githubUrl}/compare/${previousTag}..${latestTag})`;
+  const content = Object.keys(grouped)
+    .sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b))
+    .map((type) => {
+      const items = grouped[type].join("\n");
+      return `### ${KEYWORDS[type]}\n\n${items}`;
+    })
+    .join("\n\n");
+
+  return `${title}\n${content}`;
+}
+
 async function run() {
   try {
-    let previousTag = core.getInput("previous-tag");
-    if (previousTag === "") {
-      previousTag = exec("git tag | sort --version-sort | tail -n2 | head -1");
-    }
-
-    let latestTag = core.getInput("latest-tag");
-    if (latestTag === "") {
-      latestTag = exec("git describe --tags --abbrev=0");
-    }
-
-    console.log("Generating changelog for tags:", previousTag, latestTag);
-    const log = await streamToString(
-      await changelog(
-        {
-          preset: "angular",
-          // tagPrefix: `${previousTag}..${latestTag}`,
-          tagPrefix: `version`,
-        },
-        { previousTag, currentTag: latestTag, version: latestTag }
-      )
-    );
+    const [previousTag, latestTag] = getTags();
+    const includeOthers = core.getInput("include-others") === "true";
+    const log = generateChangelog(previousTag, latestTag, includeOthers);
 
     core.setOutput("changelog", log);
   } catch (error) {

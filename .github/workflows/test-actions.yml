@@ -64,6 +64,7 @@ jobs:
         with:
           previous-tag: v0.1
           latest-tag: v0.2
+          include-others: true
       - run: |
           echo "::debug::Generated changelog $changelog"
 
@@ -80,7 +81,7 @@ jobs:
             exit 1
           fi
 
-          commits=$(git log v0.1..v0.2 --oneline | cut -d' ' -f1)
+          commits=$(git log v0.1..v0.2 --pretty='%h')
           for commit in $commits; do
             if ! echo "$changelog" | grep -q "$commit"; then
               echo "::error::Commit $commit missing in changelog"

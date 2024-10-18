@@ -2,11 +2,14 @@ name: 'Godot Action'
 description: 'Build godot project'
 inputs:
   previous-tag:
-    description: 'Previous tag'
+    description: 'Previous tag (defaults to last tag)'
     default: ''
   latest-tag:
-    description: 'Latest tag'
-    default: ''
+    description: 'Latest tag (defaults to HEAD)'
+    default: 'HEAD'
+  include-others:
+    description: 'Include other changes'
+    default: 'false'
 outputs:
   changelog:
     description: 'Changelog Content'
