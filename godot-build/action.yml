@@ -56,9 +56,7 @@ runs:
         FOLDER: ${{ inputs.game-folder }}
 
     - run: |
-        cd $folder
-        zip -r $output -e -P $password *
-
+        zip -r $output -e -P $password -j $folder
         unzip -l $output -e -P $password
       shell: bash
       env:
