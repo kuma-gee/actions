@@ -6,12 +6,11 @@ on:
       steam-app:
         description: 'Steam App ID'
         type: number
-        default: 430
         required: true
       branch:
         description: 'Steam branch to release'
         type: string
-        default: ''
+        default: 'beta'
     secrets:
       STEAM_USERNAME:
         description: 'Steam username'
