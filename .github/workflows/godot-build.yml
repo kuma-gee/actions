@@ -67,7 +67,7 @@ jobs:
       matrix:
         channel: ${{ fromJson(inputs.channels) }}
     outputs:
-      game: ${{ steps.game-name.outputs.game }}
+      game: ${{ steps.build.outputs.game }}
     steps:
       - uses: actions/checkout@v4
 
@@ -96,7 +96,8 @@ jobs:
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
           game-folder: ${{ inputs.project-path }}
 
-      - uses: kuma-gee/action-godot/godot-build@main
+      - id: build
+        uses: kuma-gee/action-godot/godot-build@main
         with:
           channel: ${{ matrix.channel }}
           output: build
