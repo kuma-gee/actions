@@ -1,0 +1,52 @@
+name: Test Godot Build
+
+on:
+  push:
+    paths:
+      - godot-build/**
+    branches:
+      - main
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    container: barichello/godot-ci:4.3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuma-gee/action-godot-template/setup@v1
+        with:
+          version: 4.3
+      - id: godot-build
+        uses: ./godot-build
+        with:
+          channel: windows
+          output: build
+          game-folder: godot-game
+          password: secret-password
+      - run: |
+          if [ ! -f build/windows/main.exe ]; then
+            echo "::error::Build failed"
+            exit 1
+          fi
+
+          if [ ! -f build/godot-game-windows.zip ]; then
+            echo "::error::Zip file missing"
+            exit 1
+          fi
+
+          unzip -d output -P $PASSWORD build/godot-game-windows.zip
+          ls output
+
+          if [ ! -f output/main.exe ]; then
+            echo "::error::main.exe missing in zip"
+            exit 1
+          fi
+
+          if [ "$GAME" != "godot-game" ]; then
+            echo "::error::Game name is not godot-game"
+            exit 1
+          fi
+        shell: bash
+        env:
+          GAME: ${{ steps.godot-build.outputs.game }}
+          PASSWORD: secret-password

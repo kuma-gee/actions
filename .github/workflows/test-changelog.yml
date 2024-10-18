@@ -1,0 +1,55 @@
+name: Test Changelog
+
+on:
+  push:
+    paths:
+      - changelog/**
+    branches:
+      - main
+
+jobs:
+  test-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./changelog
+        id: changelog
+        with:
+          previous-tag: v0.1
+          latest-tag: v0.2
+          include-others: true
+      - run: |
+          echo "::debug::Generated changelog $changelog"
+
+          if ! echo "$changelog" | grep -q "v0.2"; then
+            echo "::error::Changelog missing v0.2"
+            exit 1
+          fi
+          if ! echo "$changelog" | grep -q "### Bug Fixes"; then
+            echo "::error::Changelog Bug Fixes"
+            exit 1
+          fi
+          if ! echo "$changelog" | grep -q "### Features"; then
+            echo "::error::Changelog Features"
+            exit 1
+          fi
+
+          commits=$(git log v0.1..v0.2 --pretty='%h')
+          for commit in $commits; do
+            if ! echo "$changelog" | grep -q "$commit"; then
+              echo "::error::Commit $commit missing in changelog"
+              exit 1
+            fi
+          done
+
+          commitCount=$(echo "$commits" | wc -l)
+          actualCount=$(echo "$changelog" | grep -o "* " | wc -l)
+          if [ $actualCount -ne $commitCount ]; then
+            echo "::error::There are $actualCount commits in changelog, but $commitCount expected"
+            exit 1
+          fi
+        shell: bash
+        env:
+          changelog: ${{ steps.changelog.outputs.changelog }}
