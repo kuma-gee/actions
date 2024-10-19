@@ -55,7 +55,11 @@ runs:
         FOLDER: ${{ inputs.game-folder }}
 
     - run: |
-        zip -r $output -e -P $password -j $folder
+        if [ -z "$password" ]; then
+          zip -r $output -j $folder
+        else
+          zip -r $output -e -P "$password" -j $folder
+        fi
       shell: bash
       env:
         folder: ${{ inputs.output }}/${{ inputs.channel }}
