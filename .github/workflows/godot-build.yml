@@ -74,10 +74,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
     
-      - run: ls $path
-        env:
-          path: ${{ inputs.project-path }}/${{ inputs.assets-path }}
-
       - name: Unpack protected assets
         if: env.ASSETS_PASSWORD
         uses: kuma-gee/action-protect-assets@v1
