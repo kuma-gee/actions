@@ -4,7 +4,7 @@ on:
   workflow_call:
     secrets:
       discord-webhook:
-        required: true
+        required: false
       password:
         description: 'Password for the files'
         required: false
@@ -51,7 +51,7 @@ jobs:
             release-files/*.zip
       
       - name: Successful release!
-        if: success()
+        if: success() && inputs.discord-webhook
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
@@ -59,7 +59,7 @@ jobs:
           message: "${{ steps.changelog.outputs.changelog }} \n\nPassword: ${{ secrets.password }}\n${{ steps.release.outputs.url }}"
 
       - name: Failed release!
-        if: failure()
+        if: failure() && inputs.discord-webhook
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
