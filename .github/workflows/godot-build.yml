@@ -27,6 +27,10 @@ on:
         description: 'Path to the build env file relative to the project'
         type: string
         default: 'build.gd'
+      use-password:
+        description: 'Use password'
+        type: boolean
+        default: true
 
     secrets:
       ENCRYPTION_KEY:
@@ -56,7 +60,7 @@ jobs:
       - uses: kuma-gee/action-godot/password@main
         id: random-password
         with:
-          length: 24
+          length: ${{ inputs.use-password && 32 || 0 }}
   
   build-game:
     runs-on: ubuntu-latest
