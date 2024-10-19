@@ -80,10 +80,6 @@ jobs:
         env:
           ASSETS_PASSWORD: ${{ secrets.ASSETS_PASSWORD }}
       
-      - run: ls $ASSET_FOLDER/*
-        env:
-          ASSET_FOLDER: ${{ inputs.project-path }}/${{ inputs.assets-path }}
-
       - name: Create Godot Environment File
         uses: kuma-gee/action-godot/godot-env@main
         with:
