@@ -7,7 +7,7 @@ inputs:
     default: 'release-*'
   password:
     description: 'Password for the files'
-    required: true
+    required: false
   output:
     description: 'Output folder'
     required: true
@@ -33,7 +33,7 @@ runs:
           filename=${FILE%.*}
           channel=${filename##*-}
 
-          unzip -P $PASSWORD -d $OUTPUT_PATH/$channel $FILE
+          unzip -P "$PASSWORD" -d $OUTPUT_PATH/$channel $FILE
         done
       shell: sh
       env:
