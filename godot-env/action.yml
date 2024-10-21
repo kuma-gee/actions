@@ -21,6 +21,7 @@ runs:
       id: game-version
       run: |
         CLIENT_VERSION="$VERSION"
+        SHA_VERSION=${GITHUB_SHA:0:8}
         if [ -z "$CLIENT_VERSION" ]; then
           if [ -n "$GITHUB_SHA" ]; then
             CLIENT_VERSION="$GITHUB_SHA"
@@ -28,6 +29,7 @@ runs:
         fi
       
         echo "value=$CLIENT_VERSION" >> "$GITHUB_OUTPUT"
+        echo "sha=$SHA_VERSION" >> "$GITHUB_OUTPUT"
       shell: bash
       env:
         VERSION: ${{ inputs.version }}
@@ -54,6 +56,7 @@ runs:
         class_name Build
 
         const VERSION = '$VERSION'
+        const GIT_SHA = '$GIT_SHA'
         const GAME_HASH = '$HASH'
         const STEAM_APP = $STEAM_APP
         EOF
@@ -61,5 +64,6 @@ runs:
       env:
         OUTPUT: ${{ inputs.output }}
         VERSION: ${{ steps.game-version.outputs.value }}
+        GIT_SHA: ${{ steps.game-version.outputs.sha }}
         HASH: ${{ steps.game-hash.outputs.value }}
         STEAM_APP: ${{ inputs.steam-app }}
