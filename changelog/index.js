@@ -66,7 +66,7 @@ function generateChangelog(previousTag, latestTag, includeOthers = false) {
         type = "others";
       }
 
-      if (!ORDER.includes(type)) return null;
+      if (!ORDER.includes(type) || !text) return null;
 
       text = text.trim();
       return {
