@@ -17,10 +17,10 @@ function getTags() {
   let previousTag = core.getInput("previous-tag");
   if (previousTag === "") {
     if (isReleseCandidate) {
-      previousTag = exec("git tag --sort=creatordate | tail -n2 | head -n1");
+      previousTag = exec("git tag -l v* --sort=creatordate | tail -n2 | head -n1");
     } else {
       previousTag = exec(
-        "git tag --sort=creatordate | grep -v '\\-rc[0-9]' | tail -n2 | head -n1"
+        "git tag -l v* --sort=creatordate | grep -v '\\-rc[0-9]' | tail -n2 | head -n1"
       );
     }
   }
