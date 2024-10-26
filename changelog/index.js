@@ -69,7 +69,7 @@ function generateChangelog(previousTag, latestTag, includeOthers = false) {
       text = text.trim();
       return {
         type,
-        message: `* ${text} [${hash}](${githubUrl}/commit/${fullHash})`,
+        message: `- ${text} [${hash}](${githubUrl}/commit/${fullHash})`,
       };
     })
     .filter((x) => !!x);
