@@ -23,9 +23,13 @@ function getTags() {
         "git tag -l v* --sort=creatordate | grep -v '\\-rc[0-9]' | tail -n2 | head -n1"
       );
     }
+
+    if (!previousTag) {
+      previousTag = latestTag;
+    }
   }
 
-  console.log(exec('git tag --sort=creatordate | grep -v "\\-rc[0-9]"'));
+  console.log(exec('git tag -l v* --sort=creatordate | grep -v "\\-rc[0-9]"'));
 
   return [previousTag, latestTag];
 }
