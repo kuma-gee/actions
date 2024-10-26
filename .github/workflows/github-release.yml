@@ -22,7 +22,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: kuma-gee/action-godot/changelog@main
+      - id: changelog
+        uses: kuma-gee/action-godot/changelog@main
         with:
           latest-tag: ${{ github.ref_name }}
 
