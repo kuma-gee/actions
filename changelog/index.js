@@ -29,8 +29,6 @@ function getTags() {
     }
   }
 
-  console.log(exec('git tag -l v* --sort=creatordate | grep -v "\\-rc[0-9]"'));
-
   return [previousTag, latestTag];
 }
 
