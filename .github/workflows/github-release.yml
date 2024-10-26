@@ -51,7 +51,7 @@ jobs:
             release-files/*.zip
       
       - name: Successful release!
-        if: success() && inputs.discord-webhook
+        if: success() && secrets.discord-webhook
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
@@ -59,7 +59,7 @@ jobs:
           message: "${{ steps.changelog.outputs.changelog }} \n\nPassword: ${{ secrets.password }}\n${{ steps.release.outputs.url }}"
 
       - name: Failed release!
-        if: failure() && inputs.discord-webhook
+        if: failure() && secrets.discord-webhook
         uses: kuma-gee/action-godot/discord@main
         with:
           discord-webhook: ${{ secrets.discord-webhook }}
