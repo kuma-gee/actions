@@ -12,7 +12,7 @@ function getTags() {
     latestTag = "HEAD";
   }
 
-  const isReleseCandidate = latestTag.includes("rc");
+  const isReleseCandidate = latestTag.includes("-rc");
 
   let previousTag = core.getInput("previous-tag");
   if (previousTag === "") {
@@ -20,10 +20,12 @@ function getTags() {
       previousTag = exec("git tag --sort=creatordate | tail -n2 | head -n1");
     } else {
       previousTag = exec(
-        "git tag --sort=creatordate | grep -v 'rc[0-9]' | tail -n2 | head -n1"
+        "git tag --sort=creatordate | grep -v '\\-rc[0-9]' | tail -n2 | head -n1"
       );
     }
   }
+
+  console.log(exec('git tag --sort=creatordate | grep -v "\\-rc[0-9]"'));
 
   return [previousTag, latestTag];
 }
