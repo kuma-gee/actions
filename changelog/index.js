@@ -7,14 +7,22 @@ function exec(command) {
 }
 
 function getTags() {
-  let previousTag = core.getInput("previous-tag");
-  if (previousTag === "") {
-    previousTag = exec("git tag --sort=creatordate | tail -n1");
-  }
-
   let latestTag = core.getInput("latest-tag");
   if (latestTag === "") {
-    latestTag = 'HEAD';
+    latestTag = "HEAD";
+  }
+
+  const isReleseCandidate = latestTag.includes("rc");
+
+  let previousTag = core.getInput("previous-tag");
+  if (previousTag === "") {
+    if (isReleseCandidate) {
+      previousTag = exec("git tag --sort=creatordate | tail -n1");
+    } else {
+      previousTag = exec(
+        "git tag --sort=creatordate | grep -v 'rc[0-9]' | tail -n1"
+      );
+    }
   }
 
   return [previousTag, latestTag];
@@ -49,7 +57,7 @@ function generateChangelog(previousTag, latestTag, includeOthers = false) {
       let [type, text] = message.join(" ").split(":");
       if (!text && includeOthers) {
         text = type;
-        type = 'others';
+        type = "others";
       }
 
       if (!ORDER.includes(type)) return null;
