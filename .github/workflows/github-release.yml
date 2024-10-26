@@ -2,6 +2,11 @@ name: Github release with changelog and discord notification
 
 on:
   workflow_call:
+    inputs:
+      demo:
+        description: 'Is Demo'
+        type: boolean
+        default: false
     secrets:
       discord-webhook:
         required: false
@@ -35,9 +40,15 @@ jobs:
         run: |
           NAME="$(echo ${{ github.repository }} | cut -d'/' -f2)"
           TAG="${{ github.ref_name }}"
+          SUFFIX=""
+          if [ ${{ inputs.demo }} = true ]; then
+            SUFFIX=" Demo"
+          fi
 
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "name=Release $NAME ${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "name=Release $NAME $SUFFIX ${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        env:
+          DEMO: ${{ inputs.demo }}
 
       - name: Release
         id: release
