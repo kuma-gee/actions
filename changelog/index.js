@@ -80,7 +80,7 @@ function generateChangelog(previousTag, latestTag, includeOthers = false) {
     (item) => item.message
   );
 
-  const title = `## [${latestTag}](${githubUrl}/compare/${previousTag}..${latestTag})`;
+  const title = `## [${latestTag}](${githubUrl}/compare/${previousTag}...${latestTag})`;
   const content = Object.keys(grouped)
     .sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b))
     .map((type) => {
