@@ -84,12 +84,12 @@ function generateChangelog(previousTag, latestTag, includeOthers = false) {
   const content = Object.keys(grouped)
     .sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b))
     .map((type) => {
-      const items = grouped[type].join("\n");
-      return `### ${KEYWORDS[type]}\n\n${items}`;
+      const items = grouped[type].join("\r\n");
+      return `### ${KEYWORDS[type]}\r\n\r\n${items}`;
     })
-    .join("\n\n");
+    .join("\r\n\r\n");
 
-  return `${title}\n${content}`;
+  return `${title}\r\n\r\n${content}`;
 }
 
 async function run() {
