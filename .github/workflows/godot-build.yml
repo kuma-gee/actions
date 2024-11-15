@@ -31,6 +31,10 @@ on:
         description: 'Use password'
         type: boolean
         default: true
+      template-repo:
+        description: 'Template repository'
+        type: string
+        default: 'kuma-gee/action-godot-template'
 
     secrets:
       ENCRYPTION_KEY:
@@ -98,6 +102,7 @@ jobs:
           channel: ${{ matrix.channel }}
           encryption-key: ${{ secrets.ENCRYPTION_KEY }}
           game-folder: ${{ inputs.project-path }}
+          repo: ${{ inputs.template-repo }}
 
       - id: build
         uses: kuma-gee/action-godot/godot-build@main
