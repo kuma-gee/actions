@@ -65,6 +65,9 @@ jobs:
         id: random-password
         with:
           length: ${{ inputs.use-password && 32 || 0 }}
+      - run: echo "::add-mask::$password"
+        env:
+          password: ${{ steps.random-password.outputs.password }}
   
   build-game:
     runs-on: ubuntu-latest
@@ -104,8 +107,7 @@ jobs:
           game-folder: ${{ inputs.project-path }}
           repo: ${{ inputs.template-repo }}
 
-      - id: build
-        uses: kuma-gee/action-godot/godot-build@main
+      - uses: kuma-gee/action-godot/godot-build@main
         with:
           channel: ${{ matrix.channel }}
           output: build
