@@ -50,8 +50,6 @@ runs:
 
     - name: Generate Build File
       run: |
-        echo "$HASH"
-
         cat << EOF > $OUTPUT
         class_name Build
 
