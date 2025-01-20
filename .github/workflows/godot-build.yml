@@ -105,6 +105,7 @@ jobs:
           repo: ${{ inputs.template-repo }}
 
       - uses: kuma-gee/action-godot/godot-build@main
+        id: build
         with:
           channel: ${{ matrix.channel }}
           output: build
