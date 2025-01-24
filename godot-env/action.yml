@@ -36,7 +36,7 @@ runs:
     
     - name: Generate Game Hash
       id: game-hash
-      run: echo "value=$(echo -n $CODE | sha256sum)" >> "$GITHUB_OUTPUT"
+      run: echo "value=$(echo -n $CODE | sha256sum | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       shell: bash
       env:
         CODE: ${{ inputs.code }}
