@@ -62,7 +62,7 @@ runs:
       if: ${{ inputs.channel == 'windows' }}
     - run: |
         wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
-        wine ./rcedit-x64.exe $OUTPUT/main.exe --set-icon icon.ico
+        WINEPREFIX=./wine-prefix wine ./rcedit-x64.exe $OUTPUT/main.exe --set-icon icon.ico
       shell: bash
       if: ${{ inputs.channel == 'windows' }}
       env:
