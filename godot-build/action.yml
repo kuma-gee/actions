@@ -69,6 +69,7 @@ runs:
       if: ${{ inputs.channel == 'windows' }}
       env:
         OUTPUT: ${{ inputs.output }}
+        FOLDER: ${{ inputs.game-folder }}
 
     - run: |
         if [ -z "$password" ]; then
