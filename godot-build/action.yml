@@ -58,7 +58,7 @@ runs:
       shell: bash
       if: ${{ inputs.channel == 'windows' }}
     - run: rcedit-$ARCH.exe $OUTPUT/main.exe --set-icon icon.ico 
-      shell: powershell
+      shell: bash
       if: ${{ inputs.channel == 'windows' }}
       env:
         OUTPUT: ${{ inputs.output }}
