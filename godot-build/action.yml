@@ -54,11 +54,10 @@ runs:
         OUTPUT: ${{ inputs.output }}
         FOLDER: ${{ inputs.game-folder }}
     
-    - run: |
-        wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
-        convert $ICON -define icon:auto-resize=256,128,64,48,32,16 windows-icon.ico
+    - run: wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
       shell: bash
-    - run:  rcedit-$ARCH.exe $OUTPUT/main.exe --set-icon windows-icon.ico 
+      if: ${{ inputs.channel == 'windows' }}
+    - run: rcedit-$ARCH.exe $OUTPUT/main.exe --set-icon icon.ico 
       shell: powershell
       if: ${{ inputs.channel == 'windows' }}
       env:
