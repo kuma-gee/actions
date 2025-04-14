@@ -64,7 +64,7 @@ runs:
         wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
         mkdir -v -p wine-prefix
         export WINEPREFIX="$(pwd)/wine-prefix"
-        wine ./rcedit-x64.exe $OUTPUT/windows/main.exe --set-icon icon.ico
+        wine ./rcedit-x64.exe $OUTPUT/windows/main.exe --set-icon $FOLDER/icon.ico
       shell: bash
       if: ${{ inputs.channel == 'windows' }}
       env:
