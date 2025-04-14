@@ -55,8 +55,15 @@ runs:
         FOLDER: ${{ inputs.game-folder }}
     
     - run: |
+        dpkg --add-architecture i386
+        wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+        add-apt-repository ppa:cybermax-dexter/sdl2-backport
+        apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
+        apt install --install-recommends winehq-stable
+      shell: bash
+      if: ${{ inputs.channel == 'windows' }}
+    - run: |
         wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
-        apt install wine-stable
         wine ./rcedit-x64.exe $OUTPUT/main.exe --set-icon icon.ico
       shell: bash
       if: ${{ inputs.channel == 'windows' }}
