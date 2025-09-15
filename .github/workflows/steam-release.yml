@@ -35,8 +35,9 @@ jobs:
       - name: Extract Steam Config
         id: steam-config
         run: |
-          echo "${{ secrets.STEAM_CONFIG_VDF }}" | base64 -d - | gunzip - | base64 -w 0 > config.txt
-          echo "STEAM_CONFIG=$(cat config.txt)" >> $GITHUB_OUTPUT
+          STEAM_CONFIG=$(echo "${{ secrets.STEAM_CONFIG_VDF }}" | base64 -d - | gunzip - | base64 -w 0)
+          echo "::add-mask::$STEAM_CONFIG" 
+          echo "STEAM_CONFIG=$STEAM_CONFIG" >> $GITHUB_OUTPUT
 
       - uses: game-ci/steam-deploy@v3
         with:
