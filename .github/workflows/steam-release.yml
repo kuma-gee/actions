@@ -36,7 +36,7 @@ jobs:
         id: steam-config
         run: |
           echo "${{ secrets.STEAM_CONFIG_VDF }}" | base64 -d - | gunzip - > steam_config.vdf
-          echo "STEAM_CONFIG=$(cat steam_config.vdf)" >> $GITHUB_OUTPUT
+          echo "STEAM_CONFIG=\"$(cat steam_config.vdf)\"" >> $GITHUB_OUTPUT
 
       - uses: game-ci/steam-deploy@v3
         with:
