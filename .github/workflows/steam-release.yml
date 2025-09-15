@@ -41,7 +41,7 @@ jobs:
       - uses: game-ci/steam-deploy@v3
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
-          configVdf: ${{ steps.steam-config.STEAM_CONFIG }}          
+          configVdf: ${{ steps.steam-config.outputs.STEAM_CONFIG }}          
           appId: ${{ inputs.steam-app }}
           buildDescription: ${{ github.ref_name }}
           rootPath: build
