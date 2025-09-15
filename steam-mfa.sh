@@ -17,7 +17,7 @@ if [ ! -f $STEAM_CONFIG ]; then
     exit 1
 fi
 
-ENCODED="$(base64 $STEAM_CONFIG -w 0)"
+ENCODED="$(gzip $STEAM_CONFIG -c | base64 -w 0)"
 gh secret set STEAM_USERNAME $ARGS -b $username
 gh secret set STEAM_CONFIG_VDF $ARGS -b $ENCODED
 echo "Set Steam config VDF as secret"

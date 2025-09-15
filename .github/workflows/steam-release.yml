@@ -31,11 +31,17 @@ jobs:
           artifacts: release-*
           password: ${{ secrets.PASSWORD }}
           output: build
+      
+      - name: Extract Steam Config
+        id: steam-config
+        run: |
+          echo "${{ secrets.STEAM_CONFIG_VDF }}" | base64 -d - | gunzip - > steam_config.vdf
+          echo "STEAM_CONFIG=$(cat steam_config.vdf)" >> $GITHUB_OUTPUT
 
       - uses: game-ci/steam-deploy@v3
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
-          configVdf: ${{ secrets.STEAM_CONFIG_VDF }}          
+          configVdf: ${{ steps.steam-config.STEAM_CONFIG }}          
           appId: ${{ inputs.steam-app }}
           buildDescription: ${{ github.ref_name }}
           rootPath: build
