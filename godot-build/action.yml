@@ -45,9 +45,17 @@ runs:
           EXT=".x86_64"
         elif [ "$CHANNEL" = "windows" ]; then
           EXT=".exe"
+        elif [ "$CHANNEL" = "mac" ]; then
+          EXT=".zip"
         fi
 
         godot --verbose --headless --path "$FOLDER" --export-release "$CHANNEL" "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT"
+
+        # if [ "$CHANNEL" = "mac" ]; then
+        #   chmod +x "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT"
+        #   mv "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT" "$(pwd)/$OUTPUT/$CHANNEL/$FILE.app"
+        # fi
+
       shell: bash
       env:
         CHANNEL: ${{ inputs.channel }}
@@ -58,9 +66,7 @@ runs:
         dpkg --add-architecture i386
         apt update
         apt install -y wine64 wine32
-      shell: bash
-      if: ${{ inputs.channel == 'windows' }}
-    - run: |
+
         wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
         mkdir -v -p wine-prefix
         export WINEPREFIX="$(pwd)/wine-prefix"
