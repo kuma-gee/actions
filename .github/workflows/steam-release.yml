@@ -48,5 +48,5 @@ jobs:
           rootPath: build
           depot1Path: windows
           depot2Path: linux
-          depot3Path: macos
+          # depot3Path: macos
           releaseBranch: ${{ inputs.branch }}
