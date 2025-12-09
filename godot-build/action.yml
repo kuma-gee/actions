@@ -49,7 +49,7 @@ runs:
           EXT=".zip"
         fi
 
-        godot --verbose --headless --path "$FOLDER" --export-release "$CHANNEL" "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT"
+        godot --headless --path "$FOLDER" --export-release "$CHANNEL" "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT"
 
         # if [ "$CHANNEL" = "mac" ]; then
         #   chmod +x "$(pwd)/$OUTPUT/$CHANNEL/$FILE$EXT"
