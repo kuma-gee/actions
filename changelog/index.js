@@ -20,7 +20,7 @@ function getTags() {
       previousTag = exec("git tag -l v* --sort=creatordate | tail -n2 | head -n1");
     } else {
       previousTag = exec(
-        "git tag -l v* --sort=creatordate | grep -v '\\-rc[0-9]' | tail -n2 | head -n1"
+        "git tag -l \"v*\" --sort=creatordate | grep -v '\\-rc[0-9]' | tail -n2 | head -n1"
       );
     }
 
