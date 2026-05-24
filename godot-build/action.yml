@@ -31,6 +31,11 @@ runs:
       shell: bash
       env:
         FOLDER: ${{ inputs.game-folder }}
+    - name: Import project
+      run: godot --headless --path "$FOLDER" --import || true
+      shell: bash
+      env:
+        FOLDER: ${{ inputs.game-folder }}
     - name: Build
       id: build
       run: |
